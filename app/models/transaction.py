@@ -38,6 +38,7 @@ class Loan(Base):
     initial_payment = Column(Float, nullable=False)
     remaining_amount = Column(Float, nullable=False)
     loan_months = Column(Integer, nullable=False)
+    interest_rate = Column(Float, nullable=False)
     monthly_payment = Column(Float, nullable=False)
     loan_start_date = Column(DateTime(timezone=True), nullable=False)
     video_url = Column(String, nullable=True)

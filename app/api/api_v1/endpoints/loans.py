@@ -20,6 +20,7 @@ class LoanCreate(BaseModel):
     loan_price: float
     initial_payment: float
     loan_months: int
+    interest_rate: float
     loan_start_date: datetime
     video_url: Optional[str] = None
     agreement_images: Optional[List[str]] = None
@@ -114,7 +115,8 @@ def generate_payment_schedule(db: Session, loan: Loan) -> None:
 def calculate_loan(
     loan_price: float,
     initial_payment: float,
-    loan_months: int
+    loan_months: int,
+    interest_rate: float
 ):
     """Calculate loan payment details"""
     # Input validation
@@ -126,15 +128,19 @@ def calculate_loan(
         raise HTTPException(status_code=400, detail="Initial payment must be less than loan price")
     if loan_months <= 0 or loan_months > 240:  # Max 20 years
         raise HTTPException(status_code=400, detail="Loan months must be between 1 and 240")
+    if interest_rate < 0 or interest_rate > 100:
+        raise HTTPException(status_code=400, detail="Interest rate must be between 0 and 100")
     
     remaining_amount = loan_price - initial_payment
-    monthly_payment = calculate_loan_payment(remaining_amount, loan_months)
+    interest_amount = remaining_amount * (interest_rate / 100)
+    total_loan_amount = remaining_amount + interest_amount
+    monthly_payment = round(total_loan_amount / loan_months, 2)
     
-    # Ensure total calculation is accurate
+    # Total amount customer pays (initial + monthly payments)
     total_amount = initial_payment + (monthly_payment * loan_months)
     
     return LoanCalculation(
-        loan_amount=remaining_amount,
+        loan_amount=total_loan_amount,
         monthly_payment=monthly_payment,
         total_amount=total_amount
     )
@@ -266,9 +272,11 @@ def create_loan(
             detail="Loan months must be between 1 and 240"
         )
     
-    # Calculate loan details
+    # Calculate loan details with interest
     remaining_amount = loan_data.loan_price - loan_data.initial_payment
-    monthly_payment = calculate_loan_payment(remaining_amount, loan_data.loan_months)
+    interest_amount = remaining_amount * (loan_data.interest_rate / 100)
+    total_loan_amount = remaining_amount + interest_amount
+    monthly_payment = round(total_loan_amount / loan_data.loan_months, 2)
     
     try:
         # Use the current user's magazine_id
@@ -289,6 +297,7 @@ def create_loan(
             initial_payment=loan_data.initial_payment,
             remaining_amount=remaining_amount,
             loan_months=loan_data.loan_months,
+            interest_rate=loan_data.interest_rate,
             monthly_payment=monthly_payment,
             loan_start_date=loan_data.loan_start_date,
             video_url=loan_data.video_url,
@@ -341,6 +350,7 @@ def create_loan(
         product_name=product.name,
         product_model=product.model,
         client_name=client.name,
+        client_phone=client.phone,
         seller_name=current_user.name,
         video_url=new_loan.video_url,
         agreement_images=json.loads(new_loan.agreement_images) if new_loan.agreement_images else None
