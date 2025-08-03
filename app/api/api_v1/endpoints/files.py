@@ -37,7 +37,7 @@ ALLOWED_VIDEO_TYPES = {"video/mp4", "video/mov", "video/quicktime", "video/avi",
 
 # Maximum file sizes (in bytes)
 MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB
-MAX_VIDEO_SIZE = 100 * 1024 * 1024  # 100MB
+MAX_VIDEO_SIZE = 800 * 1024 * 1024  # 800MB
 
 def validate_file_type(file: UploadFile, allowed_types: set) -> bool:
     """Validate file type based on content type"""
