@@ -56,20 +56,26 @@ def create_product(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Create a new product (managers only)"""
-    if current_user.role not in [UserRole.MANAGER, UserRole.ADMIN]:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only managers can create products"
-        )
+    """Create a new product"""
+    print(f"Product creation request from user: {current_user.name}, role: {current_user.role}, manager_id: {current_user.manager_id}")
     
     # Determine the manager ID
     if current_user.role == UserRole.ADMIN:
         # For admin, use their own ID as manager_id
         manager_id = current_user.id
-    else:
+    elif current_user.role == UserRole.MANAGER:
         # For managers, use their own ID
         manager_id = current_user.id
+    else:
+        # For sellers, use their manager's ID
+        if not current_user.manager_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Seller account is not properly configured with a manager"
+            )
+        manager_id = current_user.manager_id
+    
+    print(f"Using manager_id: {manager_id} for product creation")
     
     new_product = Product(
         name=product_data.name,
