@@ -132,9 +132,9 @@ def calculate_loan(
     if interest_rate < 0 or interest_rate > 100:
         raise HTTPException(status_code=400, detail="Interest rate must be between 0 and 100")
     
-    remaining_amount = loan_price - initial_payment
-    interest_amount = remaining_amount * (interest_rate / 100)
-    total_loan_amount = remaining_amount + interest_amount
+    financed_amount = loan_price - initial_payment
+    interest_amount = financed_amount * (interest_rate / 100)
+    total_loan_amount = financed_amount + interest_amount
     monthly_payment = round(total_loan_amount / loan_months, 2)
     
     # Total amount customer pays (initial + monthly payments)
@@ -274,11 +274,14 @@ def create_loan(
             detail="Loan months must be between 1 and 240"
         )
     
-    # Calculate loan details with interest
-    remaining_amount = loan_data.loan_price - loan_data.initial_payment
-    interest_amount = remaining_amount * (loan_data.interest_rate / 100)
-    total_loan_amount = remaining_amount + interest_amount
+    # Calculate loan details with interest (CORRECTED)
+    financed_amount = loan_data.loan_price - loan_data.initial_payment
+    interest_amount = financed_amount * (loan_data.interest_rate / 100)
+    total_loan_amount = financed_amount + interest_amount
     monthly_payment = round(total_loan_amount / loan_data.loan_months, 2)
+    
+    # FIXED: remaining_amount should be the total loan amount (financed + interest)
+    remaining_amount = total_loan_amount
     
     try:
         # Use the current user's magazine_id
