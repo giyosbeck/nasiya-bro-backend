@@ -1,5 +1,6 @@
+import os
 from typing import List, Optional
-from pydantic import validator
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -15,7 +16,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30 * 24 * 8  # 8 days
     
-    # CORS
+    # CORS - Handle manually to avoid pydantic parsing issues
     BACKEND_CORS_ORIGINS: List[str] = [
         "http://localhost:3000", 
         "http://localhost:5173", 
@@ -28,14 +29,6 @@ class Settings(BaseSettings):
         "http://172.20.10.14:8081"
     ]
     
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
-    def assemble_cors_origins(cls, v):
-        if isinstance(v, str) and not v.startswith("["):
-            return [i.strip() for i in v.split(",")]
-        elif isinstance(v, (list, str)):
-            return v
-        raise ValueError(v)
-    
     # Admin credentials (change in production)
     DEFAULT_ADMIN_USERNAME: str = "01234567"
     DEFAULT_ADMIN_PASSWORD: str = "23154216"
@@ -47,7 +40,14 @@ class Settings(BaseSettings):
     # Timezone
     TIMEZONE: str = "Asia/Tashkent"  # Uzbekistan timezone
     
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Override CORS origins from environment if provided
+        cors_env = os.getenv("BACKEND_CORS_ORIGINS")
+        if cors_env:
+            self.BACKEND_CORS_ORIGINS = [origin.strip() for origin in cors_env.split(",")]
+    
     class Config:
         env_file = ".env"
 
-settings = Settings() 
+settings = Settings()
