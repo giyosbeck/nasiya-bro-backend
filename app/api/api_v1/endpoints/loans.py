@@ -31,6 +31,7 @@ class LoanResponse(BaseModel):
     initial_payment: float
     remaining_amount: float
     loan_months: int
+    interest_rate: float
     monthly_payment: float
     loan_start_date: datetime
     created_at: datetime
@@ -184,6 +185,7 @@ def get_loans(
             initial_payment=loan.initial_payment,
             remaining_amount=loan.remaining_amount,
             loan_months=loan.loan_months,
+            interest_rate=loan.interest_rate,
             monthly_payment=loan.monthly_payment,
             loan_start_date=to_uzbekistan_time(loan.loan_start_date),
             created_at=to_uzbekistan_time(loan.created_at),
@@ -340,6 +342,7 @@ def create_loan(
         initial_payment=new_loan.initial_payment,
         remaining_amount=new_loan.remaining_amount,
         loan_months=new_loan.loan_months,
+        interest_rate=new_loan.interest_rate,
         monthly_payment=new_loan.monthly_payment,
         loan_start_date=to_uzbekistan_time(new_loan.loan_start_date),
         created_at=to_uzbekistan_time(new_loan.created_at),
@@ -394,6 +397,7 @@ def get_loan(
         initial_payment=loan.initial_payment,
         remaining_amount=loan.remaining_amount,
         loan_months=loan.loan_months,
+        interest_rate=loan.interest_rate,
         monthly_payment=loan.monthly_payment,
         loan_start_date=to_uzbekistan_time(loan.loan_start_date),
         created_at=to_uzbekistan_time(loan.created_at),
