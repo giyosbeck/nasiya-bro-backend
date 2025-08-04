@@ -778,11 +778,16 @@ def pay_full_loan(
     if loan.is_completed:
         raise HTTPException(status_code=400, detail="Loan is already completed")
     
-    # Validate payment amount matches remaining balance
-    if abs(payment_request.amount - loan.remaining_amount) > 0.01:  # Allow small floating point differences
+    # Validate payment amount is positive and not more than remaining balance
+    if payment_request.amount <= 0:
         raise HTTPException(
             status_code=400, 
-            detail=f"Payment amount ({payment_request.amount}) must match remaining balance ({loan.remaining_amount})"
+            detail="Payment amount must be greater than 0"
+        )
+    if payment_request.amount > loan.remaining_amount:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Payment amount ({payment_request.amount}) cannot be more than remaining balance ({loan.remaining_amount})"
         )
     
     try:
