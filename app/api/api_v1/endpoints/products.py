@@ -119,11 +119,20 @@ def update_product(
                 detail="You can only update your own products"
             )
     else:
-        # Sellers cannot update products
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You don't have permission to update products"
-        )
+        # Sellers can only update stock count for their manager's products
+        manager_id = current_user.manager_id
+        if product.manager_id != manager_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only update products from your manager's warehouse"
+            )
+        # Sellers can only update count field
+        update_data = product_data.dict(exclude_unset=True)
+        if any(field != 'count' for field in update_data.keys()):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Sellers can only update product stock count"
+            )
     
     # Update fields that are provided
     update_data = product_data.dict(exclude_unset=True)
