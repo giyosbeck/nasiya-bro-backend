@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from typing import List, Optional
 from datetime import datetime, timedelta
 import json
@@ -150,22 +151,58 @@ def calculate_loan(
 def get_loans(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
-    page: int = 1,
-    limit: int = 10
+    limit: int = 10,
+    offset: int = 0,
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    search: Optional[str] = None
 ):
-    """Get all loans for the current user's scope"""
+    """Get all loans for the current user's scope with filtering support"""
     query = db.query(Loan).join(Product).join(Client).join(User)
     
+    # Apply user scope filtering
     if current_user.role == UserRole.ADMIN:
         # Admin can see all loans
-        loans = query.order_by(Loan.created_at.desc()).offset((page - 1) * limit).limit(limit).all()
+        pass
     else:
         # All users (managers and sellers) see loans from their magazine
         if not current_user.magazine_id:
             # Return empty list if user has no magazine assigned
-            loans = []
+            return []
         else:
-            loans = query.filter(Loan.magazine_id == current_user.magazine_id).order_by(Loan.created_at.desc()).offset((page - 1) * limit).limit(limit).all()
+            query = query.filter(Loan.magazine_id == current_user.magazine_id)
+    
+    # Apply date filtering
+    if date_from:
+        try:
+            from_date = datetime.strptime(date_from, "%Y-%m-%d")
+            query = query.filter(Loan.loan_start_date >= from_date)
+        except ValueError:
+            pass  # Ignore invalid date format
+    
+    if date_to:
+        try:
+            to_date = datetime.strptime(date_to, "%Y-%m-%d")
+            # Add 1 day and subtract 1 second to include the entire end date
+            to_date = to_date.replace(hour=23, minute=59, second=59)
+            query = query.filter(Loan.loan_start_date <= to_date)
+        except ValueError:
+            pass  # Ignore invalid date format
+    
+    # Apply search filtering
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(
+            or_(
+                Product.name.ilike(search_term),
+                Product.model.ilike(search_term),
+                Client.name.ilike(search_term),
+                User.name.ilike(search_term)
+            )
+        )
+    
+    # Apply pagination and ordering
+    loans = query.order_by(Loan.created_at.desc()).offset(offset).limit(limit).all()
     
     # Format response with related info
     response = []
