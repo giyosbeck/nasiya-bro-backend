@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from sqlalchemy import or_
+from typing import List, Optional
 from datetime import datetime
 from app.db.database import get_db
 from app.models.transaction import Sale, TransactionType
@@ -33,24 +34,59 @@ class SaleResponse(BaseModel):
 
 @router.get("/", response_model=List[SaleResponse])
 def get_sales(
-    skip: int = 0,
-    limit: int = 50,
+    limit: int = 10,
+    offset: int = 0,
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    search: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Get all sales for the current user's scope"""
+    """Get all sales for the current user's scope with filtering support"""
     query = db.query(Sale).join(Product).join(User)
     
+    # Apply user scope filtering
     if current_user.role == UserRole.ADMIN:
         # Admin can see all sales
-        sales = query.order_by(Sale.created_at.desc()).offset(skip).limit(limit).all()
+        pass
     else:
         # All users (managers and sellers) see sales from their magazine
         if not current_user.magazine_id:
             # Return empty list if user has no magazine assigned
-            sales = []
+            return []
         else:
-            sales = query.filter(Sale.magazine_id == current_user.magazine_id).order_by(Sale.created_at.desc()).offset(skip).limit(limit).all()
+            query = query.filter(Sale.magazine_id == current_user.magazine_id)
+    
+    # Apply date filtering
+    if date_from:
+        try:
+            from_date = datetime.strptime(date_from, "%Y-%m-%d")
+            query = query.filter(Sale.sale_date >= from_date)
+        except ValueError:
+            pass  # Ignore invalid date format
+    
+    if date_to:
+        try:
+            to_date = datetime.strptime(date_to, "%Y-%m-%d")
+            # Add 1 day and subtract 1 second to include the entire end date
+            to_date = to_date.replace(hour=23, minute=59, second=59)
+            query = query.filter(Sale.sale_date <= to_date)
+        except ValueError:
+            pass  # Ignore invalid date format
+    
+    # Apply search filtering
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(
+            or_(
+                Product.name.ilike(search_term),
+                Product.model.ilike(search_term),
+                User.name.ilike(search_term)
+            )
+        )
+    
+    # Apply pagination and ordering
+    sales = query.order_by(Sale.created_at.desc()).offset(offset).limit(limit).all()
     
     # Format response with product and seller info
     response = []
