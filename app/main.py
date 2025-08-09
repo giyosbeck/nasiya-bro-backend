@@ -4,6 +4,7 @@ from pathlib import Path
 from app.core.config import settings
 from app.api.api_v1.api import api_router
 from app.db.init_db import init_db
+from app.db.auto_migrate import ensure_database_compatibility
 from app.core.scheduler import app_scheduler
 # from app.middleware.compression import CompressionMiddleware
 import logging
@@ -34,6 +35,12 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 @app.on_event("startup")
 async def startup_event():
     """Initialize database, upload directories, and scheduler on startup"""
+    
+    # Auto-migrate database schema to ensure compatibility
+    logger.info("🔧 Running database compatibility check...")
+    ensure_database_compatibility()
+    
+    # Initialize database
     init_db()
     
     # Create upload directories
@@ -45,7 +52,7 @@ async def startup_event():
     
     # Start daily expiration checks
     app_scheduler.start_daily_checks()
-    logger.info("Application startup completed with automated expiration checks")
+    logger.info("🚀 Application startup completed with automated expiration checks")
 
 @app.on_event("shutdown")
 async def shutdown_event():
