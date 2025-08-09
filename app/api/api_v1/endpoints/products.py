@@ -12,20 +12,30 @@ router = APIRouter()
 class ProductCreate(BaseModel):
     name: str
     model: str
-    price: float
+    purchase_price: float = None
+    sale_price: float = None
     count: int = 0
+    
+    # Keep backward compatibility with old price field
+    price: float = None
 
 class ProductUpdate(BaseModel):
     name: str = None
     model: str = None
-    price: float = None
+    purchase_price: float = None
+    sale_price: float = None
     count: int = None
+    
+    # Keep backward compatibility
+    price: float = None
 
 class ProductResponse(BaseModel):
     id: int
     name: str
     model: str
-    price: float
+    purchase_price: float = None
+    sale_price: float = None
+    price: float  # Keep for backward compatibility
     count: int
     manager_id: int
     
@@ -77,10 +87,33 @@ def create_product(
     
     print(f"Using manager_id: {manager_id} for product creation")
     
+    # Handle both old and new price fields for backward compatibility
+    purchase_price = getattr(product_data, 'purchase_price', None)
+    sale_price = getattr(product_data, 'sale_price', None)
+    legacy_price = getattr(product_data, 'price', None)
+    
+    # If new fields are provided, use them; otherwise fall back to legacy price
+    if purchase_price is not None and sale_price is not None:
+        final_purchase_price = purchase_price
+        final_sale_price = sale_price
+        final_price = sale_price  # Use sale_price as the legacy price
+    elif legacy_price is not None:
+        # Backward compatibility: estimate purchase and sale prices from legacy price
+        final_purchase_price = legacy_price * 0.8  # Assume 20% margin
+        final_sale_price = legacy_price
+        final_price = legacy_price
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Either provide purchase_price and sale_price, or legacy price field"
+        )
+    
     new_product = Product(
         name=product_data.name,
         model=product_data.model,
-        price=product_data.price,
+        price=final_price,
+        purchase_price=final_purchase_price,
+        sale_price=final_sale_price,
         count=product_data.count,
         manager_id=manager_id
     )
@@ -136,8 +169,29 @@ def update_product(
     
     # Update fields that are provided
     update_data = product_data.dict(exclude_unset=True)
+    
+    # Handle price field updates with backward compatibility
+    purchase_price = update_data.get('purchase_price')
+    sale_price = update_data.get('sale_price')
+    legacy_price = update_data.get('price')
+    
+    # Apply updates
     for field, value in update_data.items():
-        setattr(product, field, value)
+        if field not in ['purchase_price', 'sale_price', 'price']:
+            setattr(product, field, value)
+    
+    # Handle price updates
+    if purchase_price is not None:
+        product.purchase_price = purchase_price
+    if sale_price is not None:
+        product.sale_price = sale_price
+        product.price = sale_price  # Keep legacy field in sync
+    elif legacy_price is not None:
+        # Backward compatibility
+        product.price = legacy_price
+        product.sale_price = legacy_price
+        if product.purchase_price is None:
+            product.purchase_price = legacy_price * 0.8
     
     db.commit()
     db.refresh(product)
