@@ -9,7 +9,9 @@ class Product(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
     model = Column(String, nullable=False)
-    price = Column(Float, nullable=False)
+    price = Column(Float, nullable=False)  # Legacy field, keeping for backward compatibility
+    purchase_price = Column(Float, nullable=True)  # Price the business bought the product for
+    sale_price = Column(Float, nullable=True)      # Price the business wants to sell for
     count = Column(Integer, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
