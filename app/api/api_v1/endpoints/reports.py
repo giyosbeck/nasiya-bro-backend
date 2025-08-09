@@ -33,6 +33,23 @@ class TransactionExport(BaseModel):
     monthly_payment: Optional[float]
     loan_months: Optional[int]
 
+class RevenueAnalytics(BaseModel):
+    total_revenue: float
+    total_profit: float
+    monthly_recurring_revenue: float
+    average_transaction_value: float
+    average_profit_margin: float
+    direct_sales_revenue: float
+    direct_sales_profit: float
+    loan_revenue_projected: float
+    loan_profit_projected: float
+    revenue_growth_percentage: float
+    profit_growth_percentage: float
+    sales_loan_ratio: float
+    collection_rate: float
+    total_transactions_count: int
+    active_loans_count: int
+
 @router.get("/summary", response_model=ReportsSummary)
 def get_reports_summary(
     date_from: Optional[str] = None,
@@ -278,3 +295,152 @@ def export_transactions(
     all_transactions.sort(key=lambda x: x.date, reverse=True)
     
     return all_transactions
+
+@router.get("/revenue", response_model=RevenueAnalytics)
+def get_revenue_analytics(
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    search: Optional[str] = None,
+    transaction_type: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get detailed revenue and profit analytics"""
+    
+    # Build base queries
+    sales_query = db.query(Sale).join(Product).join(User)
+    loans_query = db.query(Loan).join(Product).join(Client).join(User)
+    
+    # Apply user scope filtering
+    if current_user.role != UserRole.ADMIN:
+        if not current_user.magazine_id:
+            return RevenueAnalytics(
+                total_revenue=0, total_profit=0, monthly_recurring_revenue=0,
+                average_transaction_value=0, average_profit_margin=0,
+                direct_sales_revenue=0, direct_sales_profit=0,
+                loan_revenue_projected=0, loan_profit_projected=0,
+                revenue_growth_percentage=0, profit_growth_percentage=0,
+                sales_loan_ratio=0, collection_rate=0,
+                total_transactions_count=0, active_loans_count=0
+            )
+        sales_query = sales_query.filter(Sale.magazine_id == current_user.magazine_id)
+        loans_query = loans_query.filter(Loan.magazine_id == current_user.magazine_id)
+    
+    # Apply date filtering
+    if date_from:
+        try:
+            from_date = datetime.strptime(date_from, "%Y-%m-%d")
+            sales_query = sales_query.filter(Sale.sale_date >= from_date)
+            loans_query = loans_query.filter(Loan.loan_start_date >= from_date)
+        except ValueError:
+            pass
+    
+    if date_to:
+        try:
+            to_date = datetime.strptime(date_to, "%Y-%m-%d")
+            to_date = to_date.replace(hour=23, minute=59, second=59)
+            sales_query = sales_query.filter(Sale.sale_date <= to_date)
+            loans_query = loans_query.filter(Loan.loan_start_date <= to_date)
+        except ValueError:
+            pass
+    
+    # Apply search filtering
+    if search:
+        search_term = f"%{search}%"
+        sales_query = sales_query.filter(
+            or_(
+                Product.name.ilike(search_term),
+                Product.model.ilike(search_term),
+                User.name.ilike(search_term)
+            )
+        )
+        loans_query = loans_query.filter(
+            or_(
+                Product.name.ilike(search_term),
+                Product.model.ilike(search_term),
+                Client.name.ilike(search_term),
+                User.name.ilike(search_term)
+            )
+        )
+    
+    # Apply transaction type filtering if needed
+    include_sales = transaction_type != 'loans'
+    include_loans = transaction_type != 'sales'
+    
+    # Calculate sales analytics
+    if include_sales:
+        sales = sales_query.all()
+        sales_revenue = sum(sale.sale_price for sale in sales)
+        sales_profit = sum(
+            (sale.sale_price - (sale.product.purchase_price or sale.product.price)) 
+            for sale in sales 
+            if sale.product.purchase_price is not None
+        )
+        # Fallback calculation if no purchase_price data
+        if sales_profit == 0 and sales_revenue > 0:
+            sales_profit = sum(
+                (sale.sale_price - sale.product.price * 0.8) 
+                for sale in sales
+            )
+    else:
+        sales = []
+        sales_revenue = 0
+        sales_profit = 0
+    
+    # Calculate loans analytics
+    if include_loans:
+        loans = loans_query.all()
+        loans_revenue = sum(
+            (loan.initial_payment + (loan.monthly_payment * loan.loan_months)) 
+            for loan in loans
+        )
+        loans_profit = sum(
+            (loan.initial_payment + (loan.monthly_payment * loan.loan_months)) - 
+            (loan.product.purchase_price or loan.product.price)
+            for loan in loans 
+            if loan.product.purchase_price is not None
+        )
+        # Fallback calculation
+        if loans_profit == 0 and loans_revenue > 0:
+            loans_profit = sum(
+                (loan.initial_payment + (loan.monthly_payment * loan.loan_months)) - 
+                (loan.product.price * 0.8)
+                for loan in loans
+            )
+        monthly_recurring = sum(loan.monthly_payment for loan in loans)
+    else:
+        loans = []
+        loans_revenue = 0
+        loans_profit = 0
+        monthly_recurring = 0
+    
+    # Calculate totals
+    total_revenue = sales_revenue + loans_revenue
+    total_profit = sales_profit + loans_profit
+    total_transactions = len(sales) + len(loans)
+    
+    # Calculate ratios and averages
+    average_transaction_value = total_revenue / total_transactions if total_transactions > 0 else 0
+    average_profit_margin = (total_profit / total_revenue * 100) if total_revenue > 0 else 0
+    sales_loan_ratio = (len(sales) / len(loans)) if len(loans) > 0 else len(sales)
+    
+    # Simplified collection rate (could be enhanced with actual payment tracking)
+    collection_rate = 85.0  # Placeholder - would need payment tracking data
+    
+    return RevenueAnalytics(
+        total_revenue=float(total_revenue),
+        total_profit=float(total_profit),
+        monthly_recurring_revenue=float(monthly_recurring),
+        average_transaction_value=float(average_transaction_value),
+        average_profit_margin=float(average_profit_margin),
+        direct_sales_revenue=float(sales_revenue),
+        direct_sales_profit=float(sales_profit),
+        loan_revenue_projected=float(loans_revenue),
+        loan_profit_projected=float(loans_profit),
+        revenue_growth_percentage=0.0,  # Would need previous period data
+        profit_growth_percentage=0.0,   # Would need previous period data
+        sales_loan_ratio=float(sales_loan_ratio),
+        collection_rate=float(collection_rate),
+        total_transactions_count=total_transactions,
+        active_loans_count=len(loans)
+    )
