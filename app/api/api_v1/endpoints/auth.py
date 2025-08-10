@@ -11,7 +11,7 @@ from app.api.deps import get_current_user
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/login")
 
-@router.post("/register", response_model=UserResponse)
+@router.post("/register", response_model=Token)
 def register_manager(
     user_data: UserCreate,
     db: Session = Depends(get_db)
@@ -57,7 +57,14 @@ def register_manager(
     if new_user.magazine:
         new_user.magazine_name = new_user.magazine.name
     
-    return new_user
+    # Generate access token for pending user (so they can stay logged in)
+    access_token = create_access_token(subject=new_user.id)
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": new_user
+    }
 
 @router.post("/login", response_model=Token)
 def login_form(
