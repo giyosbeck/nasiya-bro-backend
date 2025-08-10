@@ -139,4 +139,47 @@ def get_current_user_info(
 @router.post("/logout")
 def logout():
     """Logout endpoint (token should be removed on client side)"""
-    return {"message": "Successfully logged out"} 
+    return {"message": "Successfully logged out"}
+
+@router.post("/check-approval-status")
+def check_approval_status(
+    request_data: dict,
+    db: Session = Depends(get_db)
+):
+    """Check if user is approved without requiring authentication"""
+    phone = request_data.get("phone")
+    if not phone:
+        raise HTTPException(
+            status_code=400,
+            detail="Phone number is required"
+        )
+    
+    user = db.query(User).filter(User.phone == phone).first()
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+    
+    # Load magazine relationship
+    if user.magazine:
+        user.magazine_name = user.magazine.name
+    
+    # If user is active, generate a token for them
+    response_data = {
+        "id": user.id,
+        "name": user.name,
+        "phone": user.phone,
+        "role": user.role,
+        "status": user.status,
+        "magazine_id": user.magazine_id,
+        "magazine_name": getattr(user, 'magazine_name', None)
+    }
+    
+    # If user is active, include access token
+    if user.status == UserStatus.ACTIVE:
+        access_token = create_access_token(subject=user.id)
+        response_data["access_token"] = access_token
+        response_data["token_type"] = "bearer"
+    
+    return response_data 
