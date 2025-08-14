@@ -52,6 +52,15 @@ class UserApproval(BaseModel):
             raise ValueError('Subscription months must be between 1 and 120')
         return v
 
+class UserStatusUpdate(BaseModel):
+    status: UserStatus
+    
+    @validator('status')
+    def validate_status(cls, v):
+        if v not in [UserStatus.ACTIVE, UserStatus.INACTIVE]:
+            raise ValueError('Status must be either active or inactive')
+        return v
+
 class Token(BaseModel):
     access_token: str
     token_type: str
