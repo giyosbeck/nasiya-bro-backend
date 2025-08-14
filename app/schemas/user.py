@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import date
+from datetime import date, datetime
 from pydantic import BaseModel, validator
 from app.models.user import UserRole, UserStatus
 
@@ -28,6 +28,7 @@ class UserResponse(UserBase):
     subscription_end_date: Optional[date] = None
     magazine_id: Optional[int] = None
     magazine_name: Optional[str] = None  # Will be populated from magazine relationship
+    created_at: Optional[datetime] = None
     
     class Config:
         from_attributes = True
