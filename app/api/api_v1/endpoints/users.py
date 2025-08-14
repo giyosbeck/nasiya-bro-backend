@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.user import User, UserRole, UserStatus
-from app.schemas.user import UserResponse, SellerCreate, UserApproval
+from app.schemas.user import UserResponse, SellerCreate, UserApproval, UserStatusUpdate
 from app.api.deps import get_current_admin_user, get_current_manager_user
 from app.core.security import get_password_hash
 
@@ -196,6 +196,54 @@ def get_my_sellers(
         ).all()
     
     return sellers
+
+@router.put("/sellers/{seller_id}/status")
+def update_seller_status(
+    seller_id: int,
+    status_data: UserStatusUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_manager_user)
+):
+    """Update a seller's status (managers can only update their own sellers)"""
+    # Find the seller
+    seller = db.query(User).filter(
+        User.id == seller_id,
+        User.role == UserRole.SELLER
+    ).first()
+    
+    if not seller:
+        raise HTTPException(
+            status_code=404,
+            detail="Seller not found"
+        )
+    
+    # Check permission - managers can only update their own sellers, admins can update any
+    if current_user.role == UserRole.MANAGER and seller.manager_id != current_user.id:
+        raise HTTPException(
+            status_code=403,
+            detail="You can only update your own sellers"
+        )
+    
+    # Prevent self-status change
+    if seller.id == current_user.id:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot change your own status"
+        )
+    
+    # Update the status
+    old_status = seller.status
+    seller.status = status_data.status
+    db.commit()
+    db.refresh(seller)
+    
+    return {
+        "message": f"Seller {seller.name} status updated from {old_status.value} to {status_data.status.value}",
+        "seller_id": seller.id,
+        "seller_name": seller.name,
+        "old_status": old_status.value,
+        "new_status": status_data.status.value
+    }
 
 @router.post("/check-expired")
 def check_and_deactivate_expired_users(
