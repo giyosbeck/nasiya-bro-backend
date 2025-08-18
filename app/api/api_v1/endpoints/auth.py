@@ -197,7 +197,20 @@ def delete_account(
     db: Session = Depends(get_db)
 ):
     """Permanently delete user account"""
+    # Prevent admins from deleting their accounts
+    if current_user.role == UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin accounts cannot be deleted"
+        )
+    
     try:
+        # If user is a seller, we need to handle the manager relationship
+        if current_user.role == UserRole.SELLER:
+            # Check if this seller has any sales/loans that need to be preserved
+            # We could anonymize the data instead of deleting completely
+            pass
+        
         # Delete the user account
         db.delete(current_user)
         db.commit()
@@ -205,7 +218,8 @@ def delete_account(
         return {"message": "Account successfully deleted"}
     except Exception as e:
         db.rollback()
+        print(f"Error deleting account: {e}")  # Add logging
         raise HTTPException(
             status_code=500,
-            detail="Failed to delete account"
+            detail=f"Failed to delete account: {str(e)}"
         ) 
