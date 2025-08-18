@@ -189,4 +189,23 @@ def check_approval_status(
         response_data["access_token"] = access_token
         response_data["token_type"] = "bearer"
     
-    return response_data 
+    return response_data
+
+@router.delete("/delete-account")
+def delete_account(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Permanently delete user account"""
+    try:
+        # Delete the user account
+        db.delete(current_user)
+        db.commit()
+        
+        return {"message": "Account successfully deleted"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to delete account"
+        ) 
