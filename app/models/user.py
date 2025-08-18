@@ -48,7 +48,8 @@ class Client(Base):
     name = Column(String, nullable=False)
     phone = Column(String, nullable=False)
     passport_series = Column(String, nullable=False, unique=True, index=True)
-    passport_image_url = Column(String, nullable=True)
+    passport_image_url = Column(String, nullable=True)  # Keep for backward compatibility
+    passport_image_urls = Column(String, nullable=True)  # JSON array of all image paths
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     

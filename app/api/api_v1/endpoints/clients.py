@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
+import json
 from app.db.database import get_db
 from app.models.user import User, UserRole, Client
 from app.api.deps import get_current_user
@@ -13,6 +14,7 @@ class ClientCreate(BaseModel):
     phone: str
     passport_series: str
     passport_image_url: Optional[str] = None
+    passport_image_urls: Optional[List[str]] = None
 
 class ClientResponse(BaseModel):
     id: int
@@ -20,10 +22,31 @@ class ClientResponse(BaseModel):
     phone: str
     passport_series: str
     passport_image_url: Optional[str] = None
+    passport_image_urls: Optional[List[str]] = None
     manager_id: int
     
     class Config:
         from_attributes = True
+    
+    @classmethod
+    def from_orm_with_json(cls, client):
+        """Convert from ORM model and parse JSON fields"""
+        passport_image_urls = None
+        if client.passport_image_urls:
+            try:
+                passport_image_urls = json.loads(client.passport_image_urls)
+            except (json.JSONDecodeError, TypeError):
+                passport_image_urls = None
+        
+        return cls(
+            id=client.id,
+            name=client.name,
+            phone=client.phone,
+            passport_series=client.passport_series,
+            passport_image_url=client.passport_image_url,
+            passport_image_urls=passport_image_urls,
+            manager_id=client.manager_id
+        )
 
 @router.get("/", response_model=List[ClientResponse])
 def get_clients(
@@ -42,7 +65,7 @@ def get_clients(
         # Seller can see their manager's clients
         clients = db.query(Client).filter(Client.manager_id == current_user.manager_id).all()
     
-    return clients
+    return [ClientResponse.from_orm_with_json(client) for client in clients]
 
 @router.post("/", response_model=ClientResponse)
 def create_client(
@@ -71,11 +94,17 @@ def create_client(
         # For sellers, use their manager's ID
         manager_id = current_user.manager_id
     
+    # Handle multiple passport images
+    passport_image_urls_json = None
+    if client_data.passport_image_urls:
+        passport_image_urls_json = json.dumps(client_data.passport_image_urls)
+    
     new_client = Client(
         name=client_data.name,
         phone=client_data.phone,
         passport_series=client_data.passport_series,
         passport_image_url=client_data.passport_image_url,
+        passport_image_urls=passport_image_urls_json,
         manager_id=manager_id
     )
     
@@ -83,7 +112,7 @@ def create_client(
     db.commit()
     db.refresh(new_client)
     
-    return new_client
+    return ClientResponse.from_orm_with_json(new_client)
 
 @router.get("/{client_id}", response_model=ClientResponse)
 def get_client(
@@ -119,7 +148,7 @@ def get_client(
                 detail="You can only view your manager's clients"
             )
     
-    return client
+    return ClientResponse.from_orm_with_json(client)
 
 @router.put("/{client_id}", response_model=ClientResponse)
 def update_client(
@@ -173,10 +202,16 @@ def update_client(
     client.passport_series = client_data.passport_series
     client.passport_image_url = client_data.passport_image_url
     
+    # Handle multiple passport images
+    if client_data.passport_image_urls:
+        client.passport_image_urls = json.dumps(client_data.passport_image_urls)
+    else:
+        client.passport_image_urls = None
+    
     db.commit()
     db.refresh(client)
     
-    return client
+    return ClientResponse.from_orm_with_json(client)
 
 @router.delete("/{client_id}")
 def delete_client(
