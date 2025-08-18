@@ -196,7 +196,7 @@ def delete_account(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Permanently delete user account"""
+    """Deactivate user account (visually appears as deletion to user)"""
     # Prevent admins from deleting their accounts
     if current_user.role == UserRole.ADMIN:
         raise HTTPException(
@@ -205,21 +205,16 @@ def delete_account(
         )
     
     try:
-        # If user is a seller, we need to handle the manager relationship
-        if current_user.role == UserRole.SELLER:
-            # Check if this seller has any sales/loans that need to be preserved
-            # We could anonymize the data instead of deleting completely
-            pass
-        
-        # Delete the user account
-        db.delete(current_user)
+        # Instead of deleting, mark the account as INACTIVE
+        # This preserves data integrity while giving the user the experience of account deletion
+        current_user.status = UserStatus.INACTIVE
         db.commit()
         
         return {"message": "Account successfully deleted"}
     except Exception as e:
         db.rollback()
-        print(f"Error deleting account: {e}")  # Add logging
+        print(f"Error deactivating account: {e}")
         raise HTTPException(
             status_code=500,
-            detail=f"Failed to delete account: {str(e)}"
+            detail="Failed to delete account"
         ) 
