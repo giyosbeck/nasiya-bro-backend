@@ -17,6 +17,7 @@ router = APIRouter()
 class SaleCreate(BaseModel):
     product_id: int
     sale_price: float
+    imei: Optional[str] = None
 
 class SaleResponse(BaseModel):
     id: int
@@ -166,7 +167,8 @@ def create_sale(
             product_id=sale_data.product_id,
             sale_price=sale_data.sale_price,
             seller_id=current_user.id,
-            magazine_id=current_user.magazine_id
+            magazine_id=current_user.magazine_id,
+            imei=sale_data.imei
         )
         
         # Update product inventory atomically
