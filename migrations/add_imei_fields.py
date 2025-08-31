@@ -1,22 +1,44 @@
 #!/usr/bin/env python3
 """
 PostgreSQL migration script to add IMEI fields to sales and loans tables.
-Run this script after deploying the backend to add IMEI tracking functionality.
+Run this script on your deployed server to add IMEI tracking functionality.
 """
 
 import psycopg2
 import os
+import sys
 from urllib.parse import urlparse
 
 def get_db_connection():
-    """Get PostgreSQL database connection from environment or default"""
-    database_url = os.getenv('DATABASE_URL', 'postgresql://nasiya_user:nasiya_password@localhost:5432/nasiya_db')
+    """Get PostgreSQL database connection"""
+    # Try environment variable first
+    database_url = os.getenv('DATABASE_URL')
+    
+    if not database_url:
+        print("❌ DATABASE_URL environment variable not found")
+        print("\nPlease set DATABASE_URL or provide connection details:")
+        print("Example: DATABASE_URL=postgresql://user:password@host:port/database")
+        print("\nOr run with connection string:")
+        print("DATABASE_URL='postgresql://user:pass@host:port/db' python migrations/add_imei_fields.py")
+        return None
     
     try:
+        print(f"🔗 Connecting to database...")
+        # Parse URL to hide password in logs
+        parsed = urlparse(database_url)
+        safe_url = f"postgresql://{parsed.username}:***@{parsed.hostname}:{parsed.port}{parsed.path}"
+        print(f"   Database: {safe_url}")
+        
         conn = psycopg2.connect(database_url)
+        print("✅ Database connection successful")
         return conn
     except psycopg2.Error as e:
-        print(f"Error connecting to database: {e}")
+        print(f"❌ Error connecting to database: {e}")
+        print("\nTroubleshooting:")
+        print("1. Check if PostgreSQL server is running")
+        print("2. Verify database credentials")
+        print("3. Ensure database exists")
+        print("4. Check network connectivity to database server")
         return None
 
 def add_imei_fields():
