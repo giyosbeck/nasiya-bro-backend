@@ -338,18 +338,90 @@ class PostgreSQLMigrator:
         """Migrate all table data from SQLite to PostgreSQL"""
         logger.info("Starting data migration...")
         
-        # Order tables to respect foreign key constraints
-        ordered_tables = [
-            'magazines', 'users', 'clients', 'products', 
-            'sales', 'loans', 'loan_payments', 'transactions'
-        ]
+        postgres_url = f"postgresql://{self.postgres_config['username']}:{self.postgres_config['password']}@{self.postgres_config['host']}:{self.postgres_config['port']}/{self.postgres_config['database']}"
         
-        for table_name in ordered_tables:
-            if not self.migrate_table_data(table_name):
-                return False
-        
-        logger.info("Data migration completed successfully")
-        return True
+        try:
+            engine = create_engine(postgres_url)
+            
+            # Disable foreign key checks
+            with engine.begin() as conn:
+                conn.execute(text('SET session_replication_role = replica'))
+                
+                # Order tables to respect dependencies - users first
+                ordered_tables = [
+                    'users', 'magazines', 'clients', 'products', 
+                    'sales', 'loans', 'loan_payments', 'transactions'
+                ]
+                
+                sqlite_conn = sqlite3.connect(self.sqlite_db_path)
+                sqlite_conn.row_factory = sqlite3.Row
+                
+                for table_name in ordered_tables:
+                    try:
+                        # Get SQLite data
+                        rows = list(sqlite_conn.execute(f"SELECT * FROM {table_name}").fetchall())
+                        if not rows:
+                            logger.info(f"Table {table_name}: 0 rows (empty)")
+                            continue
+                        
+                        # Clear PostgreSQL table
+                        conn.execute(text(f"DELETE FROM {table_name}"))
+                        
+                        # Insert data
+                        for row in rows:
+                            row_data = dict(row)
+                            
+                            # Handle special cases
+                            if table_name == 'users':
+                                # Set magazine_id to NULL initially to avoid circular dependency
+                                original_mag_id = row_data.get('magazine_id')
+                                row_data['magazine_id'] = None
+                            elif table_name == 'loans' and 'is_completed' in row_data:
+                                row_data['is_completed'] = bool(row_data['is_completed'])
+                            elif table_name == 'loan_payments':
+                                if 'is_late' in row_data:
+                                    row_data['is_late'] = bool(row_data['is_late'])
+                                if 'is_full_payment' in row_data:
+                                    row_data['is_full_payment'] = bool(row_data['is_full_payment'])
+                            
+                            # Convert date strings for PostgreSQL
+                            for key, value in row_data.items():
+                                if isinstance(value, str) and ('_date' in key or '_at' in key):
+                                    if 'T' in value or ' ' in value:
+                                        try:
+                                            from datetime import datetime
+                                            row_data[key] = datetime.fromisoformat(value.replace('Z', '+00:00'))
+                                        except:
+                                            pass
+                            
+                            cols = ', '.join(row_data.keys())
+                            vals = ', '.join([f':{k}' for k in row_data.keys()])
+                            conn.execute(text(f"INSERT INTO {table_name} ({cols}) VALUES ({vals})"), row_data)
+                        
+                        logger.info(f"Table {table_name}: {len(rows)} rows migrated")
+                        
+                    except Exception as e:
+                        logger.error(f"Failed to migrate table {table_name}: {e}")
+                        continue
+                
+                # Update users with magazine_id after magazines are inserted
+                users_rows = list(sqlite_conn.execute("SELECT id, magazine_id FROM users WHERE magazine_id IS NOT NULL").fetchall())
+                for user_row in users_rows:
+                    if user_row['magazine_id']:
+                        conn.execute(text("UPDATE users SET magazine_id = :mid WHERE id = :uid"), 
+                                   {'mid': user_row['magazine_id'], 'uid': user_row['id']})
+                
+                sqlite_conn.close()
+                
+                # Re-enable foreign key checks
+                conn.execute(text('SET session_replication_role = DEFAULT'))
+                
+            logger.info("Data migration completed successfully")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Migration failed: {e}")
+            return False
 
     def update_sequences(self):
         """Update PostgreSQL sequences after data migration"""
