@@ -49,6 +49,7 @@ class LoanResponse(BaseModel):
     video_url: Optional[str]
     agreement_images: Optional[List[str]]
     imei: Optional[str]
+    overdue_amount: float
     
     class Config:
         from_attributes = True
@@ -89,6 +90,23 @@ def calculate_loan_payment(principal: float, months: int) -> float:
     # Calculate monthly payment with proper rounding
     monthly_payment = principal / months
     return round(monthly_payment, 2)
+
+def calculate_overdue_amount(db: Session, loan: Loan) -> float:
+    """Calculate total overdue amount for a loan"""
+    if loan.is_completed:
+        return 0.0
+    
+    # Get all overdue payments for this loan
+    today = datetime.now().date()
+    overdue_payments = db.query(LoanPayment).filter(
+        LoanPayment.loan_id == loan.id,
+        LoanPayment.status == PaymentStatus.PENDING,
+        LoanPayment.due_date < today
+    ).all()
+    
+    # Sum up all overdue payment amounts
+    total_overdue = sum(payment.amount for payment in overdue_payments)
+    return total_overdue
 
 def generate_payment_schedule(db: Session, loan: Loan) -> None:
     """Generate payment schedule for a loan"""
@@ -218,6 +236,8 @@ def get_loans(
                 # Handle malformed JSON gracefully
                 agreement_images = []
         
+        overdue_amount = calculate_overdue_amount(db, loan)
+        
         response.append(LoanResponse(
             id=loan.id,
             loan_price=loan.loan_price,
@@ -239,7 +259,8 @@ def get_loans(
             seller_name=loan.seller.name,
             video_url=loan.video_url,
             agreement_images=agreement_images,
-            imei=loan.imei
+            imei=loan.imei,
+            overdue_amount=overdue_amount
         ))
     
     return response
@@ -401,7 +422,8 @@ def create_loan(
         seller_name=current_user.name,
         video_url=new_loan.video_url,
         agreement_images=json.loads(new_loan.agreement_images) if new_loan.agreement_images else None,
-        imei=new_loan.imei
+        imei=new_loan.imei,
+        overdue_amount=0.0
     )
 
 @router.get("/{loan_id}", response_model=LoanResponse)
@@ -436,6 +458,8 @@ def get_loan(
     video_url = f"{base_url}/{loan.video_url}" if loan.video_url else None
     full_agreement_images = [f"{base_url}/{img}" for img in agreement_images] if agreement_images else None
     
+    overdue_amount = calculate_overdue_amount(db, loan)
+    
     return LoanResponse(
         id=loan.id,
         loan_price=loan.loan_price,
@@ -457,7 +481,8 @@ def get_loan(
         seller_name=loan.seller.name,
         video_url=video_url,
         agreement_images=full_agreement_images,
-        imei=loan.imei
+        imei=loan.imei,
+        overdue_amount=overdue_amount
     )
 
 # Payment Management Endpoints
