@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # Database
-    DATABASE_URL: str = "sqlite:///./nasiya_bro.db"
+    DATABASE_URL: str = "postgresql://nasiya_user@localhost/nasiya_bro"
     
     # Security
     SECRET_KEY: str = "nasiya-bro-secret-key-2025-change-in-production-please"
