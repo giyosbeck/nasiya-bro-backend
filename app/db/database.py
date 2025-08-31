@@ -3,11 +3,20 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
-# Create SQLAlchemy engine
-engine = create_engine(
-    settings.DATABASE_URL,
-    connect_args={"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {}
-)
+# Create SQLAlchemy engine with PostgreSQL optimizations
+engine_kwargs = {}
+
+if "postgresql" in settings.DATABASE_URL:
+    engine_kwargs = {
+        "pool_size": 10,
+        "max_overflow": 20,
+        "pool_pre_ping": True,
+        "pool_recycle": 3600
+    }
+elif "sqlite" in settings.DATABASE_URL:
+    engine_kwargs = {"connect_args": {"check_same_thread": False}}
+
+engine = create_engine(settings.DATABASE_URL, **engine_kwargs)
 
 # Create SessionLocal class
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
