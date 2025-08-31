@@ -469,40 +469,13 @@ class PostgreSQLMigrator:
         
         postgres_url = f"postgresql://{self.postgres_config['username']}:{self.postgres_config['password']}@{self.postgres_config['host']}:{self.postgres_config['port']}/{self.postgres_config['database']}"
         
-        # Update config.py
-        config_path = "app/core/config.py"
-        if os.path.exists(config_path):
-            with open(config_path, 'r') as f:
-                content = f.read()
-            
-            # Replace DATABASE_URL
-            updated_content = content.replace(
-                'DATABASE_URL: str = "sqlite:///./nasiya_bro.db"',
-                f'DATABASE_URL: str = "{postgres_url}"'
-            )
-            
-            with open(config_path, 'w') as f:
-                f.write(updated_content)
-            
-            logger.info("Updated config.py")
-        
-        # Create .env file with PostgreSQL settings
-        env_content = f"""
-# Database Configuration
-DATABASE_URL={postgres_url}
-POSTGRES_HOST={self.postgres_config['host']}
-POSTGRES_PORT={self.postgres_config['port']}
-POSTGRES_DB={self.postgres_config['database']}
-POSTGRES_USER={self.postgres_config['username']}
-POSTGRES_PASSWORD={self.postgres_config['password']}
-
-# Migration completed on {datetime.now().isoformat()}
-"""
+        # Create clean .env file with only DATABASE_URL
+        env_content = f"DATABASE_URL={postgres_url}\n"
         
         with open(".env", "w") as f:
             f.write(env_content)
         
-        logger.info("Created .env file with PostgreSQL configuration")
+        logger.info("Created clean .env file with PostgreSQL configuration")
         return True
 
     def verify_migration(self):

@@ -18,6 +18,7 @@ class Sale(Base):
     id = Column(Integer, primary_key=True, index=True)
     sale_price = Column(Float, nullable=False)
     sale_date = Column(DateTime(timezone=True), default=uzbekistan_now)
+    imei = Column(String(20), nullable=True)
     created_at = Column(DateTime(timezone=True), default=uzbekistan_now)
     
     # Foreign keys
@@ -43,6 +44,7 @@ class Loan(Base):
     loan_start_date = Column(DateTime(timezone=True), nullable=False)
     video_url = Column(String, nullable=True)
     agreement_images = Column(Text, nullable=True)  # JSON string of image URLs
+    imei = Column(String(20), nullable=True)
     is_completed = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), default=uzbekistan_now)
     

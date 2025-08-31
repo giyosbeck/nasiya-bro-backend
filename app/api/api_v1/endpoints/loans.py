@@ -25,6 +25,7 @@ class LoanCreate(BaseModel):
     loan_start_date: datetime
     video_url: Optional[str] = None
     agreement_images: Optional[List[str]] = None
+    imei: Optional[str] = None
 
 class LoanResponse(BaseModel):
     id: int
@@ -343,7 +344,8 @@ def create_loan(
             monthly_payment=monthly_payment,
             loan_start_date=loan_data.loan_start_date,
             video_url=loan_data.video_url,
-            agreement_images=json.dumps(loan_data.agreement_images) if loan_data.agreement_images else None
+            agreement_images=json.dumps(loan_data.agreement_images) if loan_data.agreement_images else None,
+            imei=loan_data.imei
         )
         
         # Update product inventory atomically
