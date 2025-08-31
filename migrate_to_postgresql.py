@@ -342,41 +342,66 @@ class PostgreSQLMigrator:
         
         try:
             engine = create_engine(postgres_url)
+            sqlite_conn = sqlite3.connect(self.sqlite_db_path)
+            sqlite_conn.row_factory = sqlite3.Row
             
-            # Disable foreign key checks
             with engine.begin() as conn:
-                conn.execute(text('SET session_replication_role = replica'))
-                
-                # Order tables to respect dependencies - users first
-                ordered_tables = [
-                    'users', 'magazines', 'clients', 'products', 
-                    'sales', 'loans', 'loan_payments', 'transactions'
-                ]
-                
-                sqlite_conn = sqlite3.connect(self.sqlite_db_path)
-                sqlite_conn.row_factory = sqlite3.Row
-                
-                for table_name in ordered_tables:
+                # Clear all tables first
+                tables_to_clear = ['transactions', 'loan_payments', 'loans', 'sales', 'products', 'clients', 'magazines', 'users']
+                for table in tables_to_clear:
                     try:
-                        # Get SQLite data
+                        conn.execute(text(f"DELETE FROM {table}"))
+                    except:
+                        pass
+                
+                # Migrate users first (without magazine_id to avoid circular dependency)
+                users_data = list(sqlite_conn.execute("SELECT * FROM users").fetchall())
+                user_magazine_refs = {}
+                
+                if users_data:
+                    for row in users_data:
+                        row_data = dict(row)
+                        user_magazine_refs[row_data['id']] = row_data.get('magazine_id')
+                        row_data['magazine_id'] = None  # Temporarily remove
+                        
+                        cols = ', '.join(row_data.keys())
+                        vals = ', '.join([f':{k}' for k in row_data.keys()])
+                        conn.execute(text(f"INSERT INTO users ({cols}) VALUES ({vals})"), row_data)
+                    
+                    logger.info(f"Users: {len(users_data)} rows migrated")
+                
+                # Migrate magazines
+                magazines_data = list(sqlite_conn.execute("SELECT * FROM magazines").fetchall())
+                if magazines_data:
+                    for row in magazines_data:
+                        row_data = dict(row)
+                        cols = ', '.join(row_data.keys())
+                        vals = ', '.join([f':{k}' for k in row_data.keys()])
+                        conn.execute(text(f"INSERT INTO magazines ({cols}) VALUES ({vals})"), row_data)
+                    
+                    logger.info(f"Magazines: {len(magazines_data)} rows migrated")
+                
+                # Update users with magazine_id
+                for user_id, mag_id in user_magazine_refs.items():
+                    if mag_id:
+                        conn.execute(text("UPDATE users SET magazine_id = :mid WHERE id = :uid"), 
+                                   {'mid': mag_id, 'uid': user_id})
+                
+                # Migrate remaining tables
+                remaining_tables = ['clients', 'products', 'sales', 'loans', 'loan_payments', 'transactions']
+                
+                for table_name in remaining_tables:
+                    try:
                         rows = list(sqlite_conn.execute(f"SELECT * FROM {table_name}").fetchall())
                         if not rows:
                             logger.info(f"Table {table_name}: 0 rows (empty)")
                             continue
                         
-                        # Clear PostgreSQL table
-                        conn.execute(text(f"DELETE FROM {table_name}"))
-                        
-                        # Insert data
                         for row in rows:
                             row_data = dict(row)
                             
-                            # Handle special cases
-                            if table_name == 'users':
-                                # Set magazine_id to NULL initially to avoid circular dependency
-                                original_mag_id = row_data.get('magazine_id')
-                                row_data['magazine_id'] = None
-                            elif table_name == 'loans' and 'is_completed' in row_data:
+                            # Fix boolean fields for PostgreSQL
+                            if table_name == 'loans' and 'is_completed' in row_data:
                                 row_data['is_completed'] = bool(row_data['is_completed'])
                             elif table_name == 'loan_payments':
                                 if 'is_late' in row_data:
@@ -384,7 +409,7 @@ class PostgreSQLMigrator:
                                 if 'is_full_payment' in row_data:
                                     row_data['is_full_payment'] = bool(row_data['is_full_payment'])
                             
-                            # Convert date strings for PostgreSQL
+                            # Convert date strings
                             for key, value in row_data.items():
                                 if isinstance(value, str) and ('_date' in key or '_at' in key):
                                     if 'T' in value or ' ' in value:
@@ -404,17 +429,7 @@ class PostgreSQLMigrator:
                         logger.error(f"Failed to migrate table {table_name}: {e}")
                         continue
                 
-                # Update users with magazine_id after magazines are inserted
-                users_rows = list(sqlite_conn.execute("SELECT id, magazine_id FROM users WHERE magazine_id IS NOT NULL").fetchall())
-                for user_row in users_rows:
-                    if user_row['magazine_id']:
-                        conn.execute(text("UPDATE users SET magazine_id = :mid WHERE id = :uid"), 
-                                   {'mid': user_row['magazine_id'], 'uid': user_row['id']})
-                
                 sqlite_conn.close()
-                
-                # Re-enable foreign key checks
-                conn.execute(text('SET session_replication_role = DEFAULT'))
                 
             logger.info("Data migration completed successfully")
             return True
