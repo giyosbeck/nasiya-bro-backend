@@ -29,6 +29,7 @@ class SaleResponse(BaseModel):
     product_name: str
     product_model: str
     seller_name: str
+    imei: Optional[str]
     
     class Config:
         from_attributes = True
@@ -101,7 +102,8 @@ def get_sales(
             seller_id=sale.seller_id,
             product_name=sale.product.name,
             product_model=sale.product.model,
-            seller_name=sale.seller.name
+            seller_name=sale.seller.name,
+            imei=sale.imei
         ))
     
     return response
@@ -206,7 +208,8 @@ def create_sale(
         seller_id=new_sale.seller_id,
         product_name=product.name,
         product_model=product.model,
-        seller_name=current_user.name
+        seller_name=current_user.name,
+        imei=new_sale.imei
     )
 
 @router.get("/{sale_id}", response_model=SaleResponse)
@@ -242,5 +245,6 @@ def get_sale(
         seller_id=sale.seller_id,
         product_name=sale.product.name,
         product_model=sale.product.model,
-        seller_name=sale.seller.name
+        seller_name=sale.seller.name,
+        imei=sale.imei
     ) 
