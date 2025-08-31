@@ -48,6 +48,7 @@ class LoanResponse(BaseModel):
     seller_name: str
     video_url: Optional[str]
     agreement_images: Optional[List[str]]
+    imei: Optional[str]
     
     class Config:
         from_attributes = True
@@ -237,7 +238,8 @@ def get_loans(
             client_phone=loan.client.phone,
             seller_name=loan.seller.name,
             video_url=loan.video_url,
-            agreement_images=agreement_images
+            agreement_images=agreement_images,
+            imei=loan.imei
         ))
     
     return response
@@ -398,7 +400,8 @@ def create_loan(
         client_phone=client.phone,
         seller_name=current_user.name,
         video_url=new_loan.video_url,
-        agreement_images=json.loads(new_loan.agreement_images) if new_loan.agreement_images else None
+        agreement_images=json.loads(new_loan.agreement_images) if new_loan.agreement_images else None,
+        imei=new_loan.imei
     )
 
 @router.get("/{loan_id}", response_model=LoanResponse)
@@ -453,7 +456,8 @@ def get_loan(
         client_phone=loan.client.phone,
         seller_name=loan.seller.name,
         video_url=video_url,
-        agreement_images=full_agreement_images
+        agreement_images=full_agreement_images,
+        imei=loan.imei
     )
 
 # Payment Management Endpoints
