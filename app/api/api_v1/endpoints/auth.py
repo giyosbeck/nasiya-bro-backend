@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.db.database import get_db
@@ -7,13 +7,16 @@ from app.models.magazine import Magazine
 from app.schemas.user import UserCreate, UserLogin, Token, UserResponse
 from app.core.security import verify_password, get_password_hash, create_access_token
 from app.api.deps import get_current_user
+from app.services.notification_service import NotificationService
+from app.models.notification import PushToken, Notification, NotificationStatus, NotificationType
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/login")
 
 @router.post("/register", response_model=Token)
-def register_manager(
+async def register_manager(
     user_data: UserCreate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
     """Register a new manager account"""
@@ -59,6 +62,55 @@ def register_manager(
     
     # Generate access token for pending user (so they can stay logged in)
     access_token = create_access_token(subject=new_user.id)
+    
+    # Send admin notification about new user registration
+    try:
+        # Get all admin users
+        admins = db.query(User).filter(User.role == UserRole.ADMIN).all()
+        
+        for admin in admins:
+            # Get active push tokens for admin
+            push_tokens = db.query(PushToken).filter(
+                PushToken.user_id == admin.id,
+                PushToken.is_active == True
+            ).all()
+            
+            for token in push_tokens:
+                # Create notification record
+                notification = Notification(
+                    type=NotificationType.new_user_registration,
+                    title="New User Registration",
+                    body=f"{new_user.name} has registered and needs approval",
+                    data={
+                        "userId": str(new_user.id),
+                        "userName": new_user.name,
+                        "userPhone": new_user.phone,
+                        "registrationDate": new_user.created_at.isoformat() if new_user.created_at else None,
+                        "magazineName": user_data.magazine_name
+                    },
+                    recipient_user_id=admin.id,
+                    push_token_id=token.id,
+                    status=NotificationStatus.pending
+                )
+                db.add(notification)
+                
+                # Send notification in background
+                background_tasks.add_task(
+                    NotificationService().send_push_notification,
+                    token.token,
+                    notification.title,
+                    notification.body,
+                    notification.data,
+                    notification.id,
+                    db
+                )
+        
+        db.commit()
+        print(f"✅ Admin notifications queued for new user registration: {new_user.name}")
+        
+    except Exception as e:
+        print(f"⚠️  Failed to send admin notifications: {str(e)}")
+        # Don't fail the registration if notification fails
     
     return {
         "access_token": access_token,
