@@ -26,21 +26,21 @@ async def register_push_token(
 ):
     """Register or update push token for current user"""
     try:
-        # Check if token already exists for this user
+        # UPSERT: Check if this exact user+token combination exists
         existing_token = db.query(PushToken).filter(
             and_(
                 PushToken.user_id == current_user.id,
-                PushToken.device_type == token_data.device_type
+                PushToken.token == token_data.push_token
             )
         ).first()
         
         if existing_token:
-            # Update existing token
-            existing_token.token = token_data.push_token
+            # Update existing token (refresh timestamp and ensure it's active)
             existing_token.is_active = True
+            existing_token.device_type = token_data.device_type
             existing_token.updated_at = datetime.now()
         else:
-            # Create new token
+            # Create new token - this supports multiple users per device
             new_token = PushToken(
                 token=token_data.push_token,
                 user_id=current_user.id,
@@ -91,17 +91,17 @@ async def register_admin_push_token(
                 detail="Admin user not found"
             )
         
-        # Check if token already exists
+        # UPSERT: Check if this exact admin+token combination exists
         existing_token = db.query(PushToken).filter(
             and_(
                 PushToken.user_id == admin_id,
-                PushToken.device_type == token_data.device_type
+                PushToken.token == token_data.push_token
             )
         ).first()
         
         if existing_token:
-            existing_token.token = token_data.push_token
             existing_token.is_active = True
+            existing_token.device_type = token_data.device_type
             existing_token.updated_at = datetime.now()
         else:
             new_token = PushToken(

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Enum, Text, JSON
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Enum, Text, JSON, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.db.database import Base
@@ -25,7 +25,7 @@ class PushToken(Base):
     __tablename__ = "push_tokens"
     
     id = Column(Integer, primary_key=True, index=True)
-    token = Column(String, nullable=False, unique=True, index=True)
+    token = Column(String, nullable=False, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     device_type = Column(Enum(DeviceType), default=DeviceType.mobile)
     is_active = Column(Boolean, default=True)
@@ -34,6 +34,11 @@ class PushToken(Base):
     
     # Relationships
     user = relationship("User")
+    
+    # Composite unique constraint: one token per user (allows multiple users per device)
+    __table_args__ = (
+        UniqueConstraint('user_id', 'token', name='uq_user_token'),
+    )
 
 class Notification(Base):
     __tablename__ = "notifications"
