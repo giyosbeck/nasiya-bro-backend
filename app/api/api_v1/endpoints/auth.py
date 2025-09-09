@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.db.database import get_db
-from app.models.user import User, UserRole, UserStatus
+from app.models.user import User, UserRole, UserStatus, UserType
 from app.models.magazine import Magazine
 from app.schemas.user import UserCreate, UserLogin, Token, UserResponse
 from app.core.security import verify_password, get_password_hash, create_access_token
@@ -77,14 +77,16 @@ async def register_manager(
             
             for token in push_tokens:
                 # Create notification record
+                user_type_display = "Auto" if new_user.user_type == UserType.AUTO else "Gadgets"
                 notification = Notification(
                     type=NotificationType.new_user_registration,
                     title="New User Registration",
-                    body=f"{new_user.name} has registered and needs approval",
+                    body=f"{new_user.name} ({user_type_display}) has registered and needs approval",
                     data={
                         "userId": str(new_user.id),
                         "userName": new_user.name,
                         "userPhone": new_user.phone,
+                        "userType": new_user.user_type.value,
                         "registrationDate": new_user.created_at.isoformat() if new_user.created_at else None,
                         "magazineName": user_data.magazine_name
                     },
@@ -269,4 +271,53 @@ def delete_account(
         raise HTTPException(
             status_code=500,
             detail="Failed to delete account"
+        )
+
+@router.put("/update-user-type")
+def update_user_type(
+    request_data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Update user type (gadgets/auto)"""
+    user_type_str = request_data.get("user_type")
+    if not user_type_str:
+        raise HTTPException(
+            status_code=400,
+            detail="User type is required"
+        )
+    
+    # Validate user type
+    if user_type_str not in ["gadgets", "auto"]:
+        raise HTTPException(
+            status_code=400,
+            detail="User type must be either 'gadgets' or 'auto'"
+        )
+    
+    user_type = UserType.GADGETS if user_type_str == "gadgets" else UserType.AUTO
+    
+    try:
+        # Update user type
+        current_user.user_type = user_type
+        db.commit()
+        
+        # Return updated user data
+        return {
+            "message": "User type updated successfully",
+            "user": {
+                "id": current_user.id,
+                "name": current_user.name,
+                "phone": current_user.phone,
+                "role": current_user.role,
+                "status": current_user.status,
+                "user_type": current_user.user_type,
+                "magazine_id": current_user.magazine_id
+            }
+        }
+    except Exception as e:
+        db.rollback()
+        print(f"Error updating user type: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to update user type"
         ) 
