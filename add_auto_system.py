@@ -2,16 +2,15 @@
 
 import sys
 import os
-import asyncio
 from sqlalchemy import text
 
 # Add the parent directory to sys.path so we can import app modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from app.db.database import get_db_pool
+from app.db.database import engine
 from app.core.config import settings
 
-async def add_auto_system():
+def add_auto_system():
     """
     Add auto system support to the database:
     1. Add user_type column to users table
@@ -20,8 +19,7 @@ async def add_auto_system():
     4. Create auto_loans table
     5. Create auto_loan_payments table
     """
-    pool = await get_db_pool()
-    async with pool.acquire() as conn:
+    with engine.connect() as conn:
         try:
             print("🚀 Starting auto system migration...")
             
@@ -29,7 +27,7 @@ async def add_auto_system():
             print("📝 Adding user_type to users table...")
             
             # Create the enum type first
-            await conn.execute(text("""
+            conn.execute(text("""
                 DO $$ BEGIN
                     CREATE TYPE usertype AS ENUM ('gadgets', 'auto');
                 EXCEPTION
@@ -38,14 +36,14 @@ async def add_auto_system():
             """))
             
             # Add the column with default value
-            await conn.execute(text("""
+            conn.execute(text("""
                 ALTER TABLE users 
                 ADD COLUMN IF NOT EXISTS user_type usertype DEFAULT 'gadgets'::usertype;
             """))
             
             # 2. Create auto_products table
             print("🚗 Creating auto_products table...")
-            await conn.execute(text("""
+            conn.execute(text("""
                 CREATE TABLE IF NOT EXISTS auto_products (
                     id SERIAL PRIMARY KEY,
                     car_name VARCHAR NOT NULL,
@@ -62,14 +60,14 @@ async def add_auto_system():
             """))
             
             # Add indexes for auto_products
-            await conn.execute(text("""
+            conn.execute(text("""
                 CREATE INDEX IF NOT EXISTS idx_auto_products_car_name ON auto_products(car_name);
                 CREATE INDEX IF NOT EXISTS idx_auto_products_manager_id ON auto_products(manager_id);
             """))
             
             # 3. Create auto_sales table
             print("💰 Creating auto_sales table...")
-            await conn.execute(text("""
+            conn.execute(text("""
                 CREATE TABLE IF NOT EXISTS auto_sales (
                     id SERIAL PRIMARY KEY,
                     sale_price FLOAT NOT NULL,
@@ -83,7 +81,7 @@ async def add_auto_system():
             
             # 4. Create auto_loans table
             print("📄 Creating auto_loans table...")
-            await conn.execute(text("""
+            conn.execute(text("""
                 CREATE TABLE IF NOT EXISTS auto_loans (
                     id SERIAL PRIMARY KEY,
                     loan_price FLOAT NOT NULL,
@@ -106,7 +104,7 @@ async def add_auto_system():
             
             # 5. Create auto_loan_payments table
             print("💳 Creating auto_loan_payments table...")
-            await conn.execute(text("""
+            conn.execute(text("""
                 CREATE TABLE IF NOT EXISTS auto_loan_payments (
                     id SERIAL PRIMARY KEY,
                     amount FLOAT NOT NULL,
@@ -123,7 +121,7 @@ async def add_auto_system():
             
             # Add indexes for performance
             print("🔍 Creating indexes...")
-            await conn.execute(text("""
+            conn.execute(text("""
                 CREATE INDEX IF NOT EXISTS idx_auto_sales_auto_product_id ON auto_sales(auto_product_id);
                 CREATE INDEX IF NOT EXISTS idx_auto_sales_seller_id ON auto_sales(seller_id);
                 CREATE INDEX IF NOT EXISTS idx_auto_sales_sale_date ON auto_sales(sale_date);
@@ -140,11 +138,14 @@ async def add_auto_system():
             
             # Update existing users to have gadgets type by default
             print("👥 Updating existing users to gadgets type...")
-            await conn.execute(text("""
+            conn.execute(text("""
                 UPDATE users 
                 SET user_type = 'gadgets'::usertype 
                 WHERE user_type IS NULL;
             """))
+            
+            # Commit all changes
+            conn.commit()
             
             print("✅ Auto system migration completed successfully!")
             print("\nNew tables created:")
@@ -159,8 +160,6 @@ async def add_auto_system():
         except Exception as e:
             print(f"❌ Migration failed: {e}")
             raise
-        finally:
-            await pool.close()
 
 if __name__ == "__main__":
-    asyncio.run(add_auto_system())
+    add_auto_system()
