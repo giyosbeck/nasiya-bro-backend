@@ -15,8 +15,8 @@ class UserStatus(str, enum.Enum):
     INACTIVE = "inactive"
 
 class UserType(str, enum.Enum):
-    GADGETS = "gadgets"
-    AUTO = "auto"
+    GADGETS = "GADGETS"
+    AUTO = "AUTO"
 
 class User(Base):
     __tablename__ = "users"
