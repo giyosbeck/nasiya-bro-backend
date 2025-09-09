@@ -12,16 +12,16 @@ import subprocess
 import sys
 from datetime import datetime
 
-# Configuration
+# Configuration - Using production database from remote server
 PROD_HOST = "nasiya.backend.leadai.uz"
 PROD_PORT = "5432"
-PROD_DB = "postgres"  # Update if different
-PROD_USER = "postgres"  # Update if different
+PROD_DB = "nasiya_bro"  # Based on microservices config
+PROD_USER = "nasiya_user"  # Based on microservices config
 
-LOCAL_HOST = "localhost"
+LOCAL_HOST = "localhost"  
 LOCAL_PORT = "5432"
-LOCAL_DB = "nasiya_local"
-LOCAL_USER = "postgres"
+LOCAL_DB = "nasiya_bro"  # Match production database name
+LOCAL_USER = "postgres"  # Local PostgreSQL user
 
 def run_command(command, env=None):
     """Run shell command and return success status"""
@@ -97,6 +97,25 @@ def main():
     # Create .env file for local development
     env_content = f"""# Local Development Database Configuration
 DATABASE_URL=postgresql://{LOCAL_USER}:{local_password}@{LOCAL_HOST}:{LOCAL_PORT}/{LOCAL_DB}
+PROJECT_NAME=Nasiya Bro API
+VERSION=1.0.0
+API_V1_STR=/api/v1
+
+# Security
+SECRET_KEY=nasiya-bro-secret-key-2025-change-in-production-please
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=11520
+
+# Admin credentials 
+DEFAULT_ADMIN_USERNAME=01234567
+DEFAULT_ADMIN_PASSWORD=23154216
+
+# File upload
+UPLOAD_FOLDER=uploads
+MAX_FILE_SIZE=10485760
+
+# Timezone
+TIMEZONE=Asia/Tashkent
 """
     
     with open('.env', 'w') as f:
