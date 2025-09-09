@@ -49,7 +49,8 @@ async def register_manager(
         password_hash=get_password_hash(user_data.password),
         role=UserRole.MANAGER,
         magazine_id=magazine_id,
-        status=UserStatus.PENDING
+        status=UserStatus.PENDING,
+        user_type=UserType.GADGETS  # Explicitly set to ensure correct value
     )
     
     db.add(new_user)
