@@ -21,6 +21,9 @@ def add_auto_system():
     """
     print("🚀 Starting auto system migration...")
     
+    # Determine the correct enum values
+    pending_value = 'pending'  # default
+    
     # First transaction: Create enums
     with engine.connect() as conn:
         try:
@@ -52,18 +55,15 @@ def add_auto_system():
                 conn.execute(text("""
                     CREATE TYPE paymentstatus AS ENUM ('pending', 'paid', 'overdue');
                 """))
+                pending_value = 'pending'
             else:
                 print(f"Found existing paymentstatus enum with values: {enum_values}")
-                
-                # Check if required values exist
-                if 'pending' not in enum_values:
-                    print("❌ Error: 'pending' value not found in existing paymentstatus enum")
-                    print(f"Existing values: {enum_values}")
-                    raise Exception("Incompatible paymentstatus enum values")
+                # Use the actual database values
+                pending_value = 'PENDING' if 'PENDING' in enum_values else 'pending'
             
             # Commit enum creation
             conn.commit()
-            print("✅ Enum types created successfully")
+            print(f"✅ Enum types created successfully (using '{pending_value}' for default)")
             
         except Exception as e:
             print(f"❌ Enum creation failed: {e}")
@@ -143,13 +143,13 @@ def add_auto_system():
             
             # 5. Create auto_loan_payments table
             print("💳 Creating auto_loan_payments table...")
-            conn.execute(text("""
+            conn.execute(text(f"""
                 CREATE TABLE IF NOT EXISTS auto_loan_payments (
                     id SERIAL PRIMARY KEY,
                     amount FLOAT NOT NULL,
                     payment_date TIMESTAMP WITH TIME ZONE,
                     due_date TIMESTAMP WITH TIME ZONE NOT NULL,
-                    status paymentstatus DEFAULT 'pending'::paymentstatus,
+                    status paymentstatus DEFAULT '{pending_value}'::paymentstatus,
                     is_late BOOLEAN DEFAULT FALSE,
                     is_full_payment BOOLEAN DEFAULT FALSE,
                     notes TEXT,
