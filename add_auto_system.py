@@ -35,14 +35,31 @@ def add_auto_system():
                 END $$;
             """))
             
-            # Create paymentstatus enum if it doesn't exist
-            conn.execute(text("""
-                DO $$ BEGIN
-                    CREATE TYPE paymentstatus AS ENUM ('pending', 'paid', 'overdue');
-                EXCEPTION
-                    WHEN duplicate_object THEN null;
-                END $$;
+            # Check if paymentstatus enum exists and what values it has
+            result = conn.execute(text("""
+                SELECT e.enumlabel 
+                FROM pg_enum e 
+                JOIN pg_type t ON e.enumtypid = t.oid 
+                WHERE t.typname = 'paymentstatus'
+                ORDER BY e.enumsortorder;
             """))
+            
+            enum_values = [row[0] for row in result.fetchall()]
+            
+            if not enum_values:
+                # Create paymentstatus enum if it doesn't exist
+                print("Creating paymentstatus enum...")
+                conn.execute(text("""
+                    CREATE TYPE paymentstatus AS ENUM ('pending', 'paid', 'overdue');
+                """))
+            else:
+                print(f"Found existing paymentstatus enum with values: {enum_values}")
+                
+                # Check if required values exist
+                if 'pending' not in enum_values:
+                    print("❌ Error: 'pending' value not found in existing paymentstatus enum")
+                    print(f"Existing values: {enum_values}")
+                    raise Exception("Incompatible paymentstatus enum values")
             
             # Commit enum creation
             conn.commit()
