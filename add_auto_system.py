@@ -19,12 +19,12 @@ def add_auto_system():
     4. Create auto_loans table
     5. Create auto_loan_payments table
     """
+    print("🚀 Starting auto system migration...")
+    
+    # First transaction: Create enums
     with engine.connect() as conn:
         try:
-            print("🚀 Starting auto system migration...")
-            
-            # 1. Add user_type enum and column to users table
-            print("📝 Adding user_type to users table...")
+            print("📝 Creating enum types...")
             
             # Create the enum types first
             conn.execute(text("""
@@ -43,6 +43,19 @@ def add_auto_system():
                     WHEN duplicate_object THEN null;
                 END $$;
             """))
+            
+            # Commit enum creation
+            conn.commit()
+            print("✅ Enum types created successfully")
+            
+        except Exception as e:
+            print(f"❌ Enum creation failed: {e}")
+            raise
+    
+    # Second transaction: Create tables and update data
+    with engine.connect() as conn:
+        try:
+            print("📝 Adding user_type column and creating tables...")
             
             # Add the column with default value
             conn.execute(text("""
@@ -119,7 +132,7 @@ def add_auto_system():
                     amount FLOAT NOT NULL,
                     payment_date TIMESTAMP WITH TIME ZONE,
                     due_date TIMESTAMP WITH TIME ZONE NOT NULL,
-                    status paymentstatus DEFAULT 'pending',
+                    status paymentstatus DEFAULT 'pending'::paymentstatus,
                     is_late BOOLEAN DEFAULT FALSE,
                     is_full_payment BOOLEAN DEFAULT FALSE,
                     notes TEXT,
