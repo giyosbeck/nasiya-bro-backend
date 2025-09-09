@@ -26,10 +26,19 @@ def add_auto_system():
             # 1. Add user_type enum and column to users table
             print("📝 Adding user_type to users table...")
             
-            # Create the enum type first
+            # Create the enum types first
             conn.execute(text("""
                 DO $$ BEGIN
                     CREATE TYPE usertype AS ENUM ('gadgets', 'auto');
+                EXCEPTION
+                    WHEN duplicate_object THEN null;
+                END $$;
+            """))
+            
+            # Create paymentstatus enum if it doesn't exist
+            conn.execute(text("""
+                DO $$ BEGIN
+                    CREATE TYPE paymentstatus AS ENUM ('pending', 'paid', 'overdue');
                 EXCEPTION
                     WHEN duplicate_object THEN null;
                 END $$;
