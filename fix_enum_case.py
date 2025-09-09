@@ -21,6 +21,18 @@ def fix_enum_case():
         try:
             print("🚀 Fixing enum case mismatch...")
             
+            # First check what enum values actually exist
+            result = conn.execute(text("""
+                SELECT e.enumlabel 
+                FROM pg_enum e 
+                JOIN pg_type t ON e.enumtypid = t.oid 
+                WHERE t.typname = 'usertype'
+                ORDER BY e.enumsortorder;
+            """))
+            
+            enum_values = [row[0] for row in result.fetchall()]
+            print(f"Actual usertype enum values: {enum_values}")
+            
             # Check current user_type values
             result = conn.execute(text("""
                 SELECT user_type, COUNT(*) as count
@@ -31,35 +43,58 @@ def fix_enum_case():
             """))
             
             current_values = result.fetchall()
-            print(f"Current user_type values in database:")
+            print(f"\nCurrent user_type values in database:")
             for value, count in current_values:
                 print(f"  - '{value}': {count} users")
             
-            # Update lowercase to uppercase to match enum
+            # Determine correct enum values to use
+            if not enum_values:
+                print("❌ No usertype enum found!")
+                return
+            
+            # Find the correct mappings
+            gadgets_enum = None
+            auto_enum = None
+            
+            for value in enum_values:
+                if value.lower() == 'gadgets':
+                    gadgets_enum = value
+                elif value.lower() == 'auto':
+                    auto_enum = value
+            
+            print(f"Mapping: 'gadgets' → '{gadgets_enum}', 'auto' → '{auto_enum}'")
+            
+            if not gadgets_enum:
+                print("❌ No gadgets enum value found!")
+                return
+                
             print("\n📝 Updating user_type values to match enum...")
             
-            # Update 'gadgets' to 'GADGETS'
-            result = conn.execute(text("""
+            # Update 'gadgets' to correct enum value
+            result = conn.execute(text(f"""
                 UPDATE users 
-                SET user_type = 'GADGETS'::usertype 
+                SET user_type = '{gadgets_enum}'::usertype 
                 WHERE user_type::text = 'gadgets';
             """))
             gadgets_updated = result.rowcount
             
-            # Update 'auto' to 'AUTO' (in case any exist)
-            result = conn.execute(text("""
-                UPDATE users 
-                SET user_type = 'AUTO'::usertype 
-                WHERE user_type::text = 'auto';
-            """))
-            auto_updated = result.rowcount
+            auto_updated = 0
+            # Update 'auto' if it exists and we have a mapping
+            if auto_enum:
+                result = conn.execute(text(f"""
+                    UPDATE users 
+                    SET user_type = '{auto_enum}'::usertype 
+                    WHERE user_type::text = 'auto';
+                """))
+                auto_updated = result.rowcount
             
             # Commit changes
             conn.commit()
             
             print(f"✅ Fixed enum case successfully!")
-            print(f"  - Updated {gadgets_updated} users from 'gadgets' to 'GADGETS'")
-            print(f"  - Updated {auto_updated} users from 'auto' to 'AUTO'")
+            print(f"  - Updated {gadgets_updated} users from 'gadgets' to '{gadgets_enum}'")
+            if auto_enum:
+                print(f"  - Updated {auto_updated} users from 'auto' to '{auto_enum}'")
             
             # Verify the fix
             result = conn.execute(text("""
