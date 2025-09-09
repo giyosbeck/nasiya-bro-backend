@@ -1,0 +1,936 @@
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]: Error creating admin user: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]: ERROR:    Exception in ASGI application
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]: Traceback (most recent call last):
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]: KeyError: 'gadgets'
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]: The above exception was the direct cause of the following exception:
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]: Traceback (most recent call last):
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     return await self.app(scope, receive, send)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await super().__call__(scope, receive, send)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     raise exc
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await self.app(scope, receive, _send)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await self.app(scope, receive, send)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     raise exc
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await app(scope, receive, sender)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await route.handle(scope, receive, send)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await self.app(scope, receive, send)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     raise exc
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     await app(scope, receive, sender)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     response = await f(request)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     solved_result = await solve_dependencies(
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     return await future
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     result = context.run(func, *args)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     return self._only_one_row(
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     fetch = cursor._raw_all_rows()
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     return [make_row(row) for row in rows]
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     return [make_row(row) for row in rows]
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     value = self._object_value_for_elem(value)
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]:     raise LookupError(
+Sep 09 15:44:41 vps06263.eskiz.uz python3[947405]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]: ERROR:    Exception in ASGI application
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]: Traceback (most recent call last):
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]: KeyError: 'gadgets'
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]: The above exception was the direct cause of the following exception:
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]: Traceback (most recent call last):
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     return await self.app(scope, receive, send)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await super().__call__(scope, receive, send)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     raise exc
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await self.app(scope, receive, _send)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await self.app(scope, receive, send)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     raise exc
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await app(scope, receive, sender)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await route.handle(scope, receive, send)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await self.app(scope, receive, send)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     raise exc
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     await app(scope, receive, sender)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     response = await f(request)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     solved_result = await solve_dependencies(
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     return await future
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     result = context.run(func, *args)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     return self._only_one_row(
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     fetch = cursor._raw_all_rows()
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     return [make_row(row) for row in rows]
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     return [make_row(row) for row in rows]
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     value = self._object_value_for_elem(value)
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]:     raise LookupError(
+Sep 09 15:44:43 vps06263.eskiz.uz python3[947407]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]: ERROR:    Exception in ASGI application
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]: Traceback (most recent call last):
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]: KeyError: 'gadgets'
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]: The above exception was the direct cause of the following exception:
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]: Traceback (most recent call last):
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     return await self.app(scope, receive, send)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await super().__call__(scope, receive, send)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     raise exc
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await self.app(scope, receive, _send)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await self.app(scope, receive, send)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     raise exc
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await app(scope, receive, sender)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await route.handle(scope, receive, send)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await self.app(scope, receive, send)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     raise exc
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     await app(scope, receive, sender)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     response = await f(request)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     solved_result = await solve_dependencies(
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     return await future
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     result = context.run(func, *args)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     return self._only_one_row(
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     fetch = cursor._raw_all_rows()
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     return [make_row(row) for row in rows]
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     return [make_row(row) for row in rows]
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     value = self._object_value_for_elem(value)
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]:     raise LookupError(
+Sep 09 15:44:50 vps06263.eskiz.uz python3[947404]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]: ERROR:    Exception in ASGI application
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]: Traceback (most recent call last):
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]: KeyError: 'gadgets'
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]: The above exception was the direct cause of the following exception:
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]: Traceback (most recent call last):
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     return await self.app(scope, receive, send)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await super().__call__(scope, receive, send)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     raise exc
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await self.app(scope, receive, _send)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await self.app(scope, receive, send)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     raise exc
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await app(scope, receive, sender)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await route.handle(scope, receive, send)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await self.app(scope, receive, send)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     raise exc
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     await app(scope, receive, sender)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     response = await f(request)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     solved_result = await solve_dependencies(
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     return await future
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     result = context.run(func, *args)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     return self._only_one_row(
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     fetch = cursor._raw_all_rows()
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     return [make_row(row) for row in rows]
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     return [make_row(row) for row in rows]
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     value = self._object_value_for_elem(value)
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]:     raise LookupError(
+Sep 09 15:44:51 vps06263.eskiz.uz python3[947406]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:44:52 vps06263.eskiz.uz python3[947407]: INFO:     84.54.86.20:0 - "POST /api/v1/notifications/register-token HTTP/1.1" 401 Unauthorized
+Sep 09 15:44:52 vps06263.eskiz.uz python3[947406]: INFO:     84.54.86.20:0 - "POST /api/v1/auth/logout HTTP/1.1" 200 OK
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]: ERROR:    Exception in ASGI application
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]: Traceback (most recent call last):
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]: KeyError: 'gadgets'
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]: The above exception was the direct cause of the following exception:
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]: Traceback (most recent call last):
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     return await self.app(scope, receive, send)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await super().__call__(scope, receive, send)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     raise exc
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await self.app(scope, receive, _send)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await self.app(scope, receive, send)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     raise exc
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await app(scope, receive, sender)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await route.handle(scope, receive, send)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await self.app(scope, receive, send)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     raise exc
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     await app(scope, receive, sender)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     response = await f(request)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     solved_result = await solve_dependencies(
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     return await future
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     result = context.run(func, *args)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     return self._only_one_row(
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     fetch = cursor._raw_all_rows()
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     return [make_row(row) for row in rows]
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     return [make_row(row) for row in rows]
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     value = self._object_value_for_elem(value)
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]:     raise LookupError(
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947405]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947406]: INFO:     84.54.86.20:0 - "POST /api/v1/notifications/register-token HTTP/1.1" 401 Unauthorized
+Sep 09 15:44:53 vps06263.eskiz.uz python3[947407]: INFO:     84.54.86.20:0 - "POST /api/v1/auth/logout HTTP/1.1" 200 OK
+Sep 09 15:44:55 vps06263.eskiz.uz python3[947404]: INFO:     84.54.86.20:0 - "POST /api/v1/notifications/register-token HTTP/1.1" 401 Unauthorized
+Sep 09 15:44:55 vps06263.eskiz.uz python3[947407]: INFO:     84.54.86.20:0 - "POST /api/v1/auth/logout HTTP/1.1" 200 OK
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]: ERROR:    Exception in ASGI application
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]: Traceback (most recent call last):
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]: KeyError: 'gadgets'
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]: The above exception was the direct cause of the following exception:
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]: Traceback (most recent call last):
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     return await self.app(scope, receive, send)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await super().__call__(scope, receive, send)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     raise exc
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await self.app(scope, receive, _send)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await self.app(scope, receive, send)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     raise exc
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await app(scope, receive, sender)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await route.handle(scope, receive, send)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await self.app(scope, receive, send)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     raise exc
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     await app(scope, receive, sender)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     response = await f(request)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     solved_result = await solve_dependencies(
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     return await future
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     result = context.run(func, *args)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     return self._only_one_row(
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     fetch = cursor._raw_all_rows()
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     return [make_row(row) for row in rows]
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     return [make_row(row) for row in rows]
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     value = self._object_value_for_elem(value)
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]:     raise LookupError(
+Sep 09 15:45:00 vps06263.eskiz.uz python3[947405]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]: ERROR:    Exception in ASGI application
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]: Traceback (most recent call last):
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]: KeyError: 'gadgets'
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]: The above exception was the direct cause of the following exception:
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]: Traceback (most recent call last):
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     return await self.app(scope, receive, send)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await super().__call__(scope, receive, send)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     raise exc
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await self.app(scope, receive, _send)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await self.app(scope, receive, send)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     raise exc
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await app(scope, receive, sender)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await route.handle(scope, receive, send)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await self.app(scope, receive, send)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     raise exc
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     await app(scope, receive, sender)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     response = await f(request)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     solved_result = await solve_dependencies(
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     return await future
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     result = context.run(func, *args)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     return self._only_one_row(
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     fetch = cursor._raw_all_rows()
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     return [make_row(row) for row in rows]
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     return [make_row(row) for row in rows]
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     value = self._object_value_for_elem(value)
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]:     raise LookupError(
+Sep 09 15:45:01 vps06263.eskiz.uz python3[947406]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]: ERROR:    Exception in ASGI application
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]: Traceback (most recent call last):
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]: KeyError: 'gadgets'
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]: The above exception was the direct cause of the following exception:
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]: Traceback (most recent call last):
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     return await self.app(scope, receive, send)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await super().__call__(scope, receive, send)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     raise exc
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await self.app(scope, receive, _send)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await self.app(scope, receive, send)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     raise exc
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await app(scope, receive, sender)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await route.handle(scope, receive, send)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await self.app(scope, receive, send)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     raise exc
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     await app(scope, receive, sender)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     response = await f(request)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     solved_result = await solve_dependencies(
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     return await future
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     result = context.run(func, *args)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     return self._only_one_row(
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     fetch = cursor._raw_all_rows()
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     return [make_row(row) for row in rows]
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     return [make_row(row) for row in rows]
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     value = self._object_value_for_elem(value)
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]:     raise LookupError(
+Sep 09 15:45:03 vps06263.eskiz.uz python3[947404]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]: ERROR:    Exception in ASGI application
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]: Traceback (most recent call last):
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]: KeyError: 'gadgets'
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]: The above exception was the direct cause of the following exception:
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]: Traceback (most recent call last):
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     return await self.app(scope, receive, send)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await super().__call__(scope, receive, send)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     raise exc
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await self.app(scope, receive, _send)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await self.app(scope, receive, send)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     raise exc
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await app(scope, receive, sender)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await route.handle(scope, receive, send)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await self.app(scope, receive, send)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     raise exc
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     await app(scope, receive, sender)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     response = await f(request)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     solved_result = await solve_dependencies(
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     return await future
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     result = context.run(func, *args)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     return self._only_one_row(
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     fetch = cursor._raw_all_rows()
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     return [make_row(row) for row in rows]
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     return [make_row(row) for row in rows]
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     value = self._object_value_for_elem(value)
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]:     raise LookupError(
+Sep 09 15:45:10 vps06263.eskiz.uz python3[947407]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]: ERROR:    Exception in ASGI application
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]: Traceback (most recent call last):
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]: KeyError: 'gadgets'
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]: The above exception was the direct cause of the following exception:
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]: Traceback (most recent call last):
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     return await self.app(scope, receive, send)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await super().__call__(scope, receive, send)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     raise exc
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await self.app(scope, receive, _send)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await self.app(scope, receive, send)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     raise exc
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await app(scope, receive, sender)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await route.handle(scope, receive, send)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await self.app(scope, receive, send)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     raise exc
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     await app(scope, receive, sender)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     response = await f(request)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     solved_result = await solve_dependencies(
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     return await future
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     result = context.run(func, *args)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     return self._only_one_row(
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     fetch = cursor._raw_all_rows()
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     return [make_row(row) for row in rows]
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     return [make_row(row) for row in rows]
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     value = self._object_value_for_elem(value)
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]:     raise LookupError(
+Sep 09 15:45:11 vps06263.eskiz.uz python3[947404]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:45:12 vps06263.eskiz.uz systemd[1]: Stopping Nasiya Bro FastAPI Backend...
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947404]: INFO:     Shutting down
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947406]: INFO:     Shutting down
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947407]: INFO:     Shutting down
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947405]: INFO:     Shutting down
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947404]: INFO:     Waiting for application shutdown.
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947404]: INFO:     Application shutdown complete.
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947404]: INFO:     Finished server process [947404]
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947406]: INFO:     Waiting for application shutdown.
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947407]: INFO:     Waiting for application shutdown.
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947406]: INFO:     Application shutdown complete.
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947407]: INFO:     Application shutdown complete.
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947405]: INFO:     Waiting for application shutdown.
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947405]: INFO:     Application shutdown complete.
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947407]: INFO:     Finished server process [947407]
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947406]: INFO:     Finished server process [947406]
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947405]: INFO:     Finished server process [947405]
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947345]: INFO:     Received SIGTERM, exiting.
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947345]: INFO:     Waiting for child process [947404]
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947345]: INFO:     Waiting for child process [947405]
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947345]: INFO:     Waiting for child process [947406]
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947345]: INFO:     Waiting for child process [947407]
+Sep 09 15:45:12 vps06263.eskiz.uz python3[947345]: INFO:     Stopping parent process [947345]
+Sep 09 15:45:12 vps06263.eskiz.uz systemd[1]: nasiya-bro.service: Deactivated successfully.
+Sep 09 15:45:12 vps06263.eskiz.uz systemd[1]: Stopped Nasiya Bro FastAPI Backend.
+Sep 09 15:45:12 vps06263.eskiz.uz systemd[1]: nasiya-bro.service: Consumed 8.688s CPU time.
+Sep 09 15:45:12 vps06263.eskiz.uz systemd[1]: Started Nasiya Bro FastAPI Backend.
+Sep 09 15:45:13 vps06263.eskiz.uz python3[947730]: INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+Sep 09 15:45:13 vps06263.eskiz.uz python3[947730]: INFO:     Started parent process [947730]
+Sep 09 15:45:20 vps06263.eskiz.uz python3[947796]: INFO:     Started server process [947796]
+Sep 09 15:45:20 vps06263.eskiz.uz python3[947796]: INFO:     Waiting for application startup.
+Sep 09 15:45:20 vps06263.eskiz.uz python3[947795]: INFO:     Started server process [947795]
+Sep 09 15:45:20 vps06263.eskiz.uz python3[947795]: INFO:     Waiting for application startup.
+Sep 09 15:45:20 vps06263.eskiz.uz python3[947794]: INFO:     Started server process [947794]
+Sep 09 15:45:20 vps06263.eskiz.uz python3[947794]: INFO:     Waiting for application startup.
+Sep 09 15:45:20 vps06263.eskiz.uz python3[947793]: INFO:     Started server process [947793]
+Sep 09 15:45:20 vps06263.eskiz.uz python3[947793]: INFO:     Waiting for application startup.
+Sep 09 15:45:21 vps06263.eskiz.uz python3[947796]: INFO:     Application startup complete.
+Sep 09 15:45:21 vps06263.eskiz.uz python3[947795]: INFO:     Application startup complete.
+Sep 09 15:45:21 vps06263.eskiz.uz python3[947794]: INFO:     Application startup complete.
+Sep 09 15:45:21 vps06263.eskiz.uz python3[947793]: INFO:     Application startup complete.
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]: Error creating admin user: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]: INFO:     84.54.86.20:0 - "GET /api/v1/auth/me HTTP/1.1" 500 Internal Server Error
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]: ERROR:    Exception in ASGI application
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]: Traceback (most recent call last):
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     return self._object_lookup[elem]  # type: ignore[return-value]
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]: KeyError: 'gadgets'
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]: The above exception was the direct cause of the following exception:
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]: Traceback (most recent call last):
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     result = await app(  # type: ignore[func-returns-value]
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     return await self.app(scope, receive, send)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/applications.py", line 1054, in __call__
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await super().__call__(scope, receive, send)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/applications.py", line 113, in __call__
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     raise exc
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await self.app(scope, receive, _send)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/cors.py", line 85, in __call__
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await self.app(scope, receive, send)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     raise exc
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await app(scope, receive, sender)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 716, in __call__
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await self.middleware_stack(scope, receive, send)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 736, in app
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await route.handle(scope, receive, send)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 290, in handle
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await self.app(scope, receive, send)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 78, in app
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     raise exc
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     await app(scope, receive, sender)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/routing.py", line 75, in app
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     response = await f(request)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/routing.py", line 292, in app
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     solved_result = await solve_dependencies(
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/fastapi/dependencies/utils.py", line 640, in solve_dependencies
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     solved = await run_in_threadpool(call, **solved_result.values)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     return await anyio.to_thread.run_sync(func)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/anyio/to_thread.py", line 56, in run_sync
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     return await get_async_backend().run_sync_in_worker_thread(
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     return await future
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/anyio/_backends/_asyncio.py", line 967, in run
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     result = context.run(func, *args)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/root/nasiya-bro-backend/app/api/deps.py", line 30, in get_current_user
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     user = db.query(User).filter(User.id == int(user_id)).first()
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/query.py", line 2759, in first
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     return self.limit(1)._iter().first()  # type: ignore
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1791, in first
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     return self._only_one_row(
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     return self._real_result._fetchone_impl(hard_close=hard_close)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     row = next(self.iterator, _NO_ROW)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/orm/loading.py", line 219, in chunks
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     fetch = cursor._raw_all_rows()
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     return [make_row(row) for row in rows]
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/result.py", line 541, in <listcomp>
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     return [make_row(row) for row in rows]
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     value = self._object_value_for_elem(value)
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]:     raise LookupError(
+Sep 09 15:45:23 vps06263.eskiz.uz python3[947794]: LookupError: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:45:27 vps06263.eskiz.uz python3[947795]: (trapped) error reading bcrypt version
+Sep 09 15:45:27 vps06263.eskiz.uz python3[947795]: Traceback (most recent call last):
+Sep 09 15:45:27 vps06263.eskiz.uz python3[947795]:   File "/usr/local/lib/python3.10/dist-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+Sep 09 15:45:27 vps06263.eskiz.uz python3[947795]:     version = _bcrypt.__about__.__version__
+Sep 09 15:45:27 vps06263.eskiz.uz python3[947795]: AttributeError: module 'bcrypt' has no attribute '__about__'
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]: Error creating admin user: 'gadgets' is not among the defined enum values. Enum name: usertype. Possible values: GADGETS, AUTO
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]: INFO:     84.54.86.20:0 - "POST /api/v1/auth/register HTTP/1.1" 500 Internal Server Error
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]: ERROR:    Exception in ASGI application
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]: Traceback (most recent call last):
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/base.py", line 1961, in _exec_single_context
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]:     self.dialect.do_execute(
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]:   File "/usr/local/lib/python3.10/dist-packages/sqlalchemy/engine/default.py", line 944, in do_execute
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]:     cursor.execute(statement, parameters)
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]: psycopg2.errors.InvalidTextRepresentation: invalid input value for enum usertype: "GADGETS"
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]: LINE 1: ...SV62u7wNG8ulzQcAYw7N/xBou', 'MANAGER', 'PENDING', 'GADGETS',...
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]:                                                              ^
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]: The above exception was the direct cause of the following exception:
+Sep 09 15:45:28 vps06263.eskiz.uz python3[947795]: Trace
