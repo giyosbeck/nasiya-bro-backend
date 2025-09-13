@@ -19,7 +19,7 @@ createdb -h localhost -U postgres nasiya_bro
 
 # Restore dump
 echo "Restoring database from dump..."
-psql -h localhost -U postgres -d nasiya_bro < nasiya_prod_dump_20250909_162035.sql
+psql -h localhost -U postgres -d nasiya_bro < nasiya_prod_dump_20250913_134351.sql
 
 # Create .env file for local development
 echo "Creating .env file..."
