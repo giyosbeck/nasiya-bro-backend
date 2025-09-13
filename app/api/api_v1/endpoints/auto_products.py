@@ -51,11 +51,12 @@ def get_auto_products(
     if current_user.user_type != UserType.AUTO:
         raise HTTPException(
             status_code=403,
-            detail="Only auto users can access auto products"
+            detail=f"Only auto users can access auto products. Current user type: {current_user.user_type}"
         )
     
     products = db.query(AutoProduct).filter(
-        AutoProduct.manager_id == current_user.id
+        AutoProduct.manager_id == current_user.id,
+        AutoProduct.count > 0
     ).all()
     
     return products

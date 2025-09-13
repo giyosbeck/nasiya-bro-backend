@@ -4,7 +4,8 @@ from typing import List, Optional
 from datetime import datetime
 from app.db.database import get_db
 from app.models.transaction import Transaction, TransactionType
-from app.models.user import User, UserRole
+from app.models.auto_transaction import AutoSale, AutoLoan
+from app.models.user import User, UserRole, UserType
 from app.api.deps import get_current_user
 from app.core.timezone import to_uzbekistan_time
 from pydantic import BaseModel
@@ -35,37 +36,93 @@ def get_recent_transactions(
     limit: int = 10
 ):
     """Get recent transactions for activity feed"""
-    query = db.query(Transaction).join(User, Transaction.seller_id == User.id)
     
-    if current_user.role == UserRole.ADMIN:
-        # Admin can see all transactions
-        transactions = query.order_by(Transaction.created_at.desc()).limit(limit).all()
+    # Check if user is AUTO type
+    is_auto_user = current_user.user_type == UserType.AUTO
+    
+    if is_auto_user:
+        # For AUTO users, get from auto tables instead
+        all_transactions = []
+        
+        # Get auto sales
+        auto_sales = db.query(AutoSale).filter(
+            AutoSale.seller_id == current_user.id
+        ).order_by(AutoSale.created_at.desc()).limit(limit).all()
+        
+        for sale in auto_sales:
+            all_transactions.append(TransactionResponse(
+                id=sale.id,
+                type="sale",
+                amount=sale.sale_price,
+                description=f"Auto sale",
+                created_at=sale.created_at,
+                sale_id=sale.id,
+                loan_id=None,
+                loan_payment_id=None,
+                product_id=sale.auto_product_id,
+                client_id=None,
+                seller_id=sale.seller_id,
+                seller_name=sale.seller.name if sale.seller else "Unknown"
+            ))
+            
+        # Get auto loans
+        auto_loans = db.query(AutoLoan).filter(
+            AutoLoan.seller_id == current_user.id
+        ).order_by(AutoLoan.created_at.desc()).limit(limit).all()
+        
+        for loan in auto_loans:
+            all_transactions.append(TransactionResponse(
+                id=loan.id,
+                type="loan", 
+                amount=loan.loan_price,
+                description=f"Auto loan",
+                created_at=loan.created_at,
+                sale_id=None,
+                loan_id=loan.id,
+                loan_payment_id=None,
+                product_id=loan.auto_product_id,
+                client_id=loan.client_id,
+                seller_id=loan.seller_id,
+                seller_name=loan.seller.name if loan.seller else "Unknown"
+            ))
+        
+        # Sort by date and limit
+        all_transactions.sort(key=lambda x: x.created_at, reverse=True)
+        return all_transactions[:limit]
+        
     else:
-        # Users see transactions from their magazine
-        if not current_user.magazine_id:
-            transactions = []
+        # Original logic for regular users
+        query = db.query(Transaction).join(User, Transaction.seller_id == User.id)
+        
+        if current_user.role == UserRole.ADMIN:
+            # Admin can see all transactions
+            transactions = query.order_by(Transaction.created_at.desc()).limit(limit).all()
         else:
-            transactions = query.filter(Transaction.magazine_id == current_user.magazine_id).order_by(Transaction.created_at.desc()).limit(limit).all()
-    
-    # Format response
-    response = []
-    for transaction in transactions:
-        response.append(TransactionResponse(
-            id=transaction.id,
-            type=transaction.type.value,
-            amount=transaction.amount,
-            description=transaction.description,
-            created_at=to_uzbekistan_time(transaction.created_at),
-            sale_id=transaction.sale_id,
-            loan_id=transaction.loan_id,
-            loan_payment_id=transaction.loan_payment_id,
-            product_id=transaction.product_id,
-            client_id=transaction.client_id,
-            seller_id=transaction.seller_id,
-            seller_name=transaction.seller.name
-        ))
-    
-    return response
+            # Users see transactions from their magazine
+            if not current_user.magazine_id:
+                transactions = []
+            else:
+                transactions = query.filter(Transaction.magazine_id == current_user.magazine_id).order_by(Transaction.created_at.desc()).limit(limit).all()
+        
+        # Format response for regular transactions
+        response = []
+        for transaction in transactions:
+            response.append(TransactionResponse(
+                id=transaction.id,
+                type=transaction.type.value,
+                amount=transaction.amount,
+                description=transaction.description,
+                created_at=to_uzbekistan_time(transaction.created_at),
+                sale_id=transaction.sale_id,
+                loan_id=transaction.loan_id,
+                loan_payment_id=transaction.loan_payment_id,
+                product_id=transaction.product_id,
+                client_id=transaction.client_id,
+                seller_id=transaction.seller_id,
+                seller_name=transaction.seller.name
+            ))
+        
+        return response
 
 @router.get("/", response_model=List[TransactionResponse])
 def get_all_transactions(
@@ -75,37 +132,94 @@ def get_all_transactions(
     limit: int = 50
 ):
     """Get all transactions with pagination"""
-    query = db.query(Transaction).join(User, Transaction.seller_id == User.id)
     
-    if current_user.role == UserRole.ADMIN:
-        # Admin can see all transactions
-        transactions = query.order_by(Transaction.created_at.desc()).offset((page - 1) * limit).limit(limit).all()
+    # Check if user is AUTO type
+    is_auto_user = current_user.user_type == UserType.AUTO
+    
+    if is_auto_user:
+        # For AUTO users, get from auto tables instead
+        all_transactions = []
+        
+        # Get auto sales with pagination
+        offset = (page - 1) * limit
+        auto_sales = db.query(AutoSale).filter(
+            AutoSale.seller_id == current_user.id
+        ).order_by(AutoSale.created_at.desc()).offset(offset).limit(limit).all()
+        
+        for sale in auto_sales:
+            all_transactions.append(TransactionResponse(
+                id=sale.id,
+                type="sale",
+                amount=sale.sale_price,
+                description=f"Auto sale",
+                created_at=sale.created_at,
+                sale_id=sale.id,
+                loan_id=None,
+                loan_payment_id=None,
+                product_id=sale.auto_product_id,
+                client_id=None,
+                seller_id=sale.seller_id,
+                seller_name=sale.seller.name if sale.seller else "Unknown"
+            ))
+            
+        # Get auto loans with pagination
+        auto_loans = db.query(AutoLoan).filter(
+            AutoLoan.seller_id == current_user.id
+        ).order_by(AutoLoan.created_at.desc()).offset(offset).limit(limit).all()
+        
+        for loan in auto_loans:
+            all_transactions.append(TransactionResponse(
+                id=loan.id,
+                type="loan", 
+                amount=loan.loan_price,
+                description=f"Auto loan",
+                created_at=loan.created_at,
+                sale_id=None,
+                loan_id=loan.id,
+                loan_payment_id=None,
+                product_id=loan.auto_product_id,
+                client_id=loan.client_id,
+                seller_id=loan.seller_id,
+                seller_name=loan.seller.name if loan.seller else "Unknown"
+            ))
+        
+        # Sort by date and return
+        all_transactions.sort(key=lambda x: x.created_at, reverse=True)
+        return all_transactions
+        
     else:
-        # Users see transactions from their magazine
-        if not current_user.magazine_id:
-            transactions = []
+        # Original logic for regular users
+        query = db.query(Transaction).join(User, Transaction.seller_id == User.id)
+        
+        if current_user.role == UserRole.ADMIN:
+            # Admin can see all transactions
+            transactions = query.order_by(Transaction.created_at.desc()).offset((page - 1) * limit).limit(limit).all()
         else:
-            transactions = query.filter(Transaction.magazine_id == current_user.magazine_id).order_by(Transaction.created_at.desc()).offset((page - 1) * limit).limit(limit).all()
-    
-    # Format response
-    response = []
-    for transaction in transactions:
-        response.append(TransactionResponse(
-            id=transaction.id,
-            type=transaction.type.value,
-            amount=transaction.amount,
-            description=transaction.description,
-            created_at=to_uzbekistan_time(transaction.created_at),
-            sale_id=transaction.sale_id,
-            loan_id=transaction.loan_id,
-            loan_payment_id=transaction.loan_payment_id,
-            product_id=transaction.product_id,
-            client_id=transaction.client_id,
-            seller_id=transaction.seller_id,
-            seller_name=transaction.seller.name
-        ))
-    
-    return response
+            # Users see transactions from their magazine
+            if not current_user.magazine_id:
+                transactions = []
+            else:
+                transactions = query.filter(Transaction.magazine_id == current_user.magazine_id).order_by(Transaction.created_at.desc()).offset((page - 1) * limit).limit(limit).all()
+        
+        # Format response for regular transactions
+        response = []
+        for transaction in transactions:
+            response.append(TransactionResponse(
+                id=transaction.id,
+                type=transaction.type.value,
+                amount=transaction.amount,
+                description=transaction.description,
+                created_at=to_uzbekistan_time(transaction.created_at),
+                sale_id=transaction.sale_id,
+                loan_id=transaction.loan_id,
+                loan_payment_id=transaction.loan_payment_id,
+                product_id=transaction.product_id,
+                client_id=transaction.client_id,
+                seller_id=transaction.seller_id,
+                seller_name=transaction.seller.name
+            ))
+        
+        return response
 
 def create_transaction(
     db: Session,

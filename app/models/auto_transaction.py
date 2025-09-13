@@ -17,7 +17,7 @@ class AutoSale(Base):
     # Foreign keys
     auto_product_id = Column(Integer, ForeignKey("auto_products.id"), nullable=False)
     seller_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    magazine_id = Column(Integer, ForeignKey("magazines.id"), nullable=False)
+    magazine_id = Column(Integer, ForeignKey("magazines.id"), nullable=True)
     
     # Relationships
     auto_product = relationship("AutoProduct", back_populates="auto_sales")
@@ -44,7 +44,7 @@ class AutoLoan(Base):
     auto_product_id = Column(Integer, ForeignKey("auto_products.id"), nullable=False)
     client_id = Column(Integer, ForeignKey("clients.id"), nullable=False)
     seller_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    magazine_id = Column(Integer, ForeignKey("magazines.id"), nullable=False)
+    magazine_id = Column(Integer, ForeignKey("magazines.id"), nullable=True)
     
     # Relationships
     auto_product = relationship("AutoProduct", back_populates="auto_loans")

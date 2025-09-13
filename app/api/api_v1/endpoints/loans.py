@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from typing import List, Optional
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 import json
 from app.db.database import get_db
 from app.models.transaction import Loan, LoanPayment, TransactionType, PaymentStatus
@@ -110,14 +111,13 @@ def calculate_overdue_amount(db: Session, loan: Loan) -> float:
 
 def generate_payment_schedule(db: Session, loan: Loan) -> None:
     """Generate payment schedule for a loan"""
-    from datetime import timedelta
     
-    # Calculate due dates for each month (approximate 30 days per month)
-    base_due_date = loan.loan_start_date.date() + timedelta(days=30)
+    # Calculate due dates for each month using proper month addition
+    base_due_date = loan.loan_start_date.date() + relativedelta(months=1)
     
     for month in range(loan.loan_months):
-        # Calculate due date for this payment (month * 30 days)
-        due_date = base_due_date + timedelta(days=month * 30)
+        # Calculate due date for this payment (proper month addition)
+        due_date = base_due_date + relativedelta(months=month)
         
         # Create payment record with status as "pending"
         payment = LoanPayment(

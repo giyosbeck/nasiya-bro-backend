@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import date, datetime
 from pydantic import BaseModel, validator
-from app.models.user import UserRole, UserStatus
+from app.models.user import UserRole, UserStatus, UserType
 
 class UserBase(BaseModel):
     name: str
@@ -10,6 +10,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     magazine_name: Optional[str] = None
+    user_type: Optional[UserType] = None
     
     @validator('phone')
     def validate_phone(cls, v):
@@ -25,6 +26,7 @@ class UserResponse(UserBase):
     id: int
     role: UserRole
     status: UserStatus
+    user_type: Optional[UserType] = None  # Business type (AUTO/GADGETS)
     subscription_end_date: Optional[date] = None
     magazine_id: Optional[int] = None
     magazine_name: Optional[str] = None  # Will be populated from magazine relationship

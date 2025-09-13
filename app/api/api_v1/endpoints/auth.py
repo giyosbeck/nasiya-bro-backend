@@ -50,7 +50,7 @@ async def register_manager(
         role=UserRole.MANAGER,
         magazine_id=magazine_id,
         status=UserStatus.PENDING,
-        user_type=UserType.GADGETS  # Explicitly set to ensure correct value
+        user_type=user_data.user_type
     )
     
     db.add(new_user)
@@ -78,7 +78,7 @@ async def register_manager(
             
             for token in push_tokens:
                 # Create notification record
-                user_type_display = "Auto" if new_user.user_type == UserType.AUTO else "Gadgets"
+                user_type_display = "Auto" if new_user.user_type == UserType.AUTO else ("Gadgets" if new_user.user_type == UserType.GADGETS else "Pending Mode Selection")
                 notification = Notification(
                     type=NotificationType.new_user_registration,
                     title="New User Registration",
@@ -87,7 +87,7 @@ async def register_manager(
                         "userId": str(new_user.id),
                         "userName": new_user.name,
                         "userPhone": new_user.phone,
-                        "userType": new_user.user_type.value,
+                        "userType": new_user.user_type.value if new_user.user_type else None,
                         "registrationDate": new_user.created_at.isoformat() if new_user.created_at else None,
                         "magazineName": user_data.magazine_name
                     },

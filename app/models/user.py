@@ -27,7 +27,7 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     role = Column(Enum(UserRole), nullable=False)
     status = Column(Enum(UserStatus), default=UserStatus.PENDING)
-    user_type = Column(Enum(UserType), default=UserType.GADGETS)
+    user_type = Column(Enum(UserType), nullable=True)
     magazine_name = Column(String, nullable=True)
     subscription_end_date = Column(Date, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

@@ -30,6 +30,10 @@ def get_current_user(
     user = db.query(User).filter(User.id == int(user_id)).first()
     if user is None:
         raise credentials_exception
+    
+    # Debug: Check what user data is loaded
+    print(f"DEBUG get_current_user: user_id={user.id}, user_type={user.user_type}, name={user.name}")
+    
     return user
 
 def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:

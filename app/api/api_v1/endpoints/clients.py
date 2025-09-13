@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 import json
 from app.db.database import get_db
-from app.models.user import User, UserRole, Client
+from app.models.user import User, UserRole, UserType, Client
 from app.api.deps import get_current_user
 from pydantic import BaseModel
 
@@ -53,17 +53,38 @@ def get_clients(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Get all clients for the current user's scope"""
+    """Get all clients for the current user's scope based on business type"""
     
-    if current_user.role == UserRole.ADMIN:
-        # Admin can see all clients
-        clients = db.query(Client).all()
-    elif current_user.role == UserRole.MANAGER:
-        # Manager can see their own clients
-        clients = db.query(Client).filter(Client.manager_id == current_user.id).all()
+    if current_user.user_type == UserType.GADGETS:
+        # GADGETS: Clients belong to magazine - filter by magazine_id
+        query = db.query(Client).join(User, Client.manager_id == User.id)
+        
+        if current_user.role == UserRole.ADMIN:
+            # Admin can see all clients from their magazine
+            clients = query.filter(User.magazine_id == current_user.magazine_id).all()
+        elif current_user.role == UserRole.MANAGER:
+            # Manager can see all clients from their magazine
+            clients = query.filter(User.magazine_id == current_user.magazine_id).all()
+        else:
+            # Seller can see all clients from their magazine
+            clients = query.filter(User.magazine_id == current_user.magazine_id).all()
+    
+    elif current_user.user_type == UserType.AUTO:
+        # AUTO: Clients belong to specific user - filter by manager_id
+        if current_user.role == UserRole.ADMIN:
+            # Admin can see all AUTO clients
+            query = db.query(Client).join(User, Client.manager_id == User.id)
+            clients = query.filter(User.user_type == UserType.AUTO).all()
+        elif current_user.role == UserRole.MANAGER:
+            # Manager can see their own clients
+            clients = db.query(Client).filter(Client.manager_id == current_user.id).all()
+        else:
+            # Seller can see their manager's clients
+            clients = db.query(Client).filter(Client.manager_id == current_user.manager_id).all()
+    
     else:
-        # Seller can see their manager's clients
-        clients = db.query(Client).filter(Client.manager_id == current_user.manager_id).all()
+        # Fallback: no user_type specified, use old logic
+        clients = []
     
     return [ClientResponse.from_orm_with_json(client) for client in clients]
 

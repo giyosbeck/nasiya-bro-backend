@@ -13,13 +13,17 @@ class AutoProduct(Base):
     year = Column(Integer, nullable=False)  # Yili
     purchase_price = Column(Float, nullable=False)  # Tan narxi
     sale_price = Column(Float, nullable=False)  # Sotuv narxi
-    count = Column(Integer, default=0)
+    count = Column(Integer, default=1)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     # Reference to manager who owns this warehouse
     manager_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     manager = relationship("User")
+    
+    # Reference to magazine (nullable for AUTO users)
+    magazine_id = Column(Integer, ForeignKey("magazines.id"), nullable=True)
+    magazine = relationship("Magazine")
     
     # Relationships
     auto_sales = relationship("AutoSale", back_populates="auto_product")
