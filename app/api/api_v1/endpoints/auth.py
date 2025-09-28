@@ -321,4 +321,78 @@ def update_user_type(
         raise HTTPException(
             status_code=500,
             detail="Failed to update user type"
+        )
+
+@router.put("/update-profile")
+def update_profile(
+    request_data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Update user profile (name and password)"""
+    name = request_data.get("name")
+    current_password = request_data.get("current_password")
+    new_password = request_data.get("new_password")
+
+    if not name or not name.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Name is required"
+        )
+
+    try:
+        # Update name
+        current_user.name = name.strip()
+
+        # Update password if provided
+        if new_password:
+            if not current_password:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Current password is required to change password"
+                )
+
+            # Verify current password
+            if not verify_password(current_password, current_user.password_hash):
+                raise HTTPException(
+                    status_code=400,
+                    detail="Current password is incorrect"
+                )
+
+            # Validate new password
+            if len(new_password) < 6:
+                raise HTTPException(
+                    status_code=400,
+                    detail="New password must be at least 6 characters"
+                )
+
+            # Update password
+            current_user.password_hash = get_password_hash(new_password)
+
+        db.commit()
+        db.refresh(current_user)
+
+        # Return updated user data
+        return {
+            "success": True,
+            "message": "Profile updated successfully",
+            "user": {
+                "id": current_user.id,
+                "name": current_user.name,
+                "phone": current_user.phone,
+                "role": current_user.role,
+                "status": current_user.status,
+                "user_type": current_user.user_type,
+                "magazine_id": current_user.magazine_id
+            }
+        }
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception as e:
+        db.rollback()
+        print(f"Error updating profile: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to update profile"
         ) 

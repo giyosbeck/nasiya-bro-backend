@@ -920,4 +920,88 @@ def pay_full_loan(
         "amount_paid": payment_request.amount,
         "payments_settled": payments_count,
         "loan_completed": True
-    } 
+    }
+
+@router.get("/my-upcoming-payments", response_model=List[dict])
+def get_my_upcoming_payments(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get all upcoming payments for current user's clients (for notification scheduling)"""
+    from datetime import datetime, timedelta
+
+    # Get payments due in next 30 days for notification scheduling
+    end_date = datetime.now() + timedelta(days=30)
+
+    # Build query for current user's loans
+    query = db.query(LoanPayment).join(Loan).filter(
+        LoanPayment.status == PaymentStatus.PENDING,
+        LoanPayment.due_date >= datetime.now(),
+        LoanPayment.due_date <= end_date,
+        Loan.is_completed == False,
+        Loan.seller_id == current_user.id  # Only current user's loans
+    )
+
+    upcoming_payments = query.order_by(LoanPayment.due_date).all()
+
+    # Format for mobile notification system
+    result = []
+    for payment in upcoming_payments:
+        result.append({
+            "id": str(payment.id),
+            "clientName": payment.loan.client.name,
+            "amount": payment.amount,
+            "dueDate": payment.due_date.isoformat(),
+            "loanId": str(payment.loan_id),
+            "productName": payment.loan.product.name
+        })
+
+    return result
+
+@router.post("/check-payment-status")
+def check_and_update_payment_status(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Check payment status and deactivate user if payments are overdue"""
+    from datetime import datetime, timedelta
+
+    # Get all overdue payments for the current user
+    overdue_cutoff = datetime.now() - timedelta(days=1)  # 1 day after due date
+
+    query = db.query(LoanPayment).join(Loan).filter(
+        LoanPayment.status == PaymentStatus.PENDING,
+        LoanPayment.due_date < overdue_cutoff,
+        Loan.is_completed == False,
+        Loan.seller_id == current_user.id
+    )
+
+    overdue_payments = query.all()
+
+    # Check if user should be deactivated (has overdue payments)
+    should_deactivate = len(overdue_payments) > 0
+
+    if should_deactivate and current_user.status == 'active':
+        # Deactivate user due to overdue payments
+        current_user.status = 'inactive'
+        db.commit()
+
+        return {
+            "status": "deactivated",
+            "reason": "overdue_payments",
+            "overdue_count": len(overdue_payments),
+            "message": "Your account has been deactivated due to overdue payments. Please contact support."
+        }
+    elif should_deactivate:
+        return {
+            "status": "already_inactive",
+            "reason": "overdue_payments",
+            "overdue_count": len(overdue_payments),
+            "message": "Your account is inactive due to overdue payments. Please contact support."
+        }
+    else:
+        return {
+            "status": "active",
+            "overdue_count": 0,
+            "message": "Your account is in good standing."
+        } 
