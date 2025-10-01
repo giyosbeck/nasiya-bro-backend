@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.db.database import get_db
 from app.models.product import Product
-from app.models.user import User, UserRole
+from app.models.auto_product import AutoProduct
+from app.models.user import User, UserRole, UserType
 from app.api.deps import get_current_user
 from pydantic import BaseModel
 
@@ -236,6 +237,33 @@ def delete_product(
     
     return {"message": "Product deleted successfully"}
 
+class HasProductsResponse(BaseModel):
+    has_products: bool
+    count: int
+
+@router.get("/has-products", response_model=HasProductsResponse)
+def check_has_products(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Check if user has any products in warehouse"""
+    # AUTO users have separate auto_products table
+    if current_user.user_type == UserType.AUTO:
+        if current_user.role == UserRole.ADMIN:
+            count = db.query(AutoProduct).count()
+        else:
+            manager_id = current_user.id if current_user.role == UserRole.MANAGER else current_user.manager_id
+            count = db.query(AutoProduct).filter(AutoProduct.manager_id == manager_id).count()
+    else:
+        # GADGETS users use regular products table
+        if current_user.role == UserRole.ADMIN:
+            count = db.query(Product).count()
+        else:
+            manager_id = current_user.id if current_user.role == UserRole.MANAGER else current_user.manager_id
+            count = db.query(Product).filter(Product.manager_id == manager_id).count()
+
+    return {"has_products": count > 0, "count": count}
+
 @router.get("/{product_id}", response_model=ProductResponse)
 def get_product(
     product_id: int,
@@ -244,13 +272,13 @@ def get_product(
 ):
     """Get a specific product by ID"""
     product = db.query(Product).filter(Product.id == product_id).first()
-    
+
     if not product:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Product not found"
         )
-    
+
     # Check if user has permission to view this product
     if current_user.role == UserRole.ADMIN:
         # Admin can view any product
@@ -263,5 +291,5 @@ def get_product(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You can only view your own products"
             )
-    
+
     return product 
