@@ -228,20 +228,19 @@ async def serve_file(
 ):
     """Serve uploaded files (public access for media display)"""
     full_path = Path(settings.UPLOAD_FOLDER) / file_path
-    
-    if not full_path.exists():
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="File not found"
-        )
-    
-    # Basic security check - ensure file is within upload directory
+
     try:
         full_path.resolve().relative_to(Path(settings.UPLOAD_FOLDER).resolve())
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied"
+        )
+
+    if not full_path.exists() or not full_path.is_file():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="File not found"
         )
     
     # Determine content type

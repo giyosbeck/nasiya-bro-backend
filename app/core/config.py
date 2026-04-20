@@ -1,53 +1,67 @@
-import os
-from typing import List, Optional
-from pydantic import field_validator
-from pydantic_settings import BaseSettings
+import secrets
+from typing import List
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
     PROJECT_NAME: str = "Nasiya Bro API"
-    VERSION: str = "1.0.0"
+    VERSION: str = "1.2.0"
     API_V1_STR: str = "/api/v1"
-    
-    # Database
+    API_V2_STR: str = "/api/v2"
+
+    ENVIRONMENT: str = "development"
+
     DATABASE_URL: str = "sqlite:///./nasiya_bro.db"
-    
-    # Security
-    SECRET_KEY: str = "nasiya-bro-secret-key-2025-change-in-production-please"
+
+    SECRET_KEY: str = ""
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30 * 24 * 8  # 8 days
-    
-    # CORS - Handle manually to avoid pydantic parsing issues
-    BACKEND_CORS_ORIGINS: List[str] = [
-        "http://localhost:3000", 
-        "http://localhost:5173", 
-        "http://localhost:8080", 
-        "http://192.168.100.29:19000", 
-        "http://192.168.100.29:19006",
-        "http://192.168.100.29:8081",
-        "http://172.20.10.14:19000",
-        "http://172.20.10.14:19006",
-        "http://172.20.10.14:8081"
-    ]
-    
-    # Admin credentials (change in production)
-    DEFAULT_ADMIN_USERNAME: str = "01234567"
-    DEFAULT_ADMIN_PASSWORD: str = "23154216"
-    
-    # File upload
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 30
+
+    BACKEND_CORS_ORIGINS_RAW: str = ""
+
+    @property
+    def BACKEND_CORS_ORIGINS(self) -> List[str]:
+        return [o.strip() for o in self.BACKEND_CORS_ORIGINS_RAW.split(",") if o.strip()]
+
+    DEFAULT_ADMIN_USERNAME: str = ""
+    DEFAULT_ADMIN_PASSWORD: str = ""
+
     UPLOAD_FOLDER: str = "uploads"
-    MAX_FILE_SIZE: int = 10 * 1024 * 1024  # 10MB
-    
-    # Timezone
-    TIMEZONE: str = "Asia/Tashkent"  # Uzbekistan timezone
-    
+    MAX_FILE_SIZE: int = 10 * 1024 * 1024
+
+    TIMEZONE: str = "Asia/Tashkent"
+
+    SENTRY_DSN: str = ""
+
+    TRIAL_DAYS: int = 90
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Override CORS origins from environment if provided
-        cors_env = os.getenv("BACKEND_CORS_ORIGINS")
-        if cors_env:
-            self.BACKEND_CORS_ORIGINS = [origin.strip() for origin in cors_env.split(",")]
-    
-    class Config:
-        env_file = ".env"
+        self._validate_required()
+
+    def _validate_required(self) -> None:
+        is_prod = self.ENVIRONMENT.lower() in {"production", "staging"}
+
+        if not self.SECRET_KEY:
+            if is_prod:
+                raise RuntimeError(
+                    "SECRET_KEY is required in production. "
+                    "Generate with: python -c \"import secrets; print(secrets.token_urlsafe(48))\""
+                )
+            self.SECRET_KEY = secrets.token_urlsafe(48)
+
+        if is_prod and not self.BACKEND_CORS_ORIGINS:
+            raise RuntimeError(
+                "BACKEND_CORS_ORIGINS must be configured in production."
+            )
+
+        if is_prod and (not self.DEFAULT_ADMIN_USERNAME or not self.DEFAULT_ADMIN_PASSWORD):
+            raise RuntimeError(
+                "DEFAULT_ADMIN_USERNAME and DEFAULT_ADMIN_PASSWORD must be set in production."
+            )
+
 
 settings = Settings()

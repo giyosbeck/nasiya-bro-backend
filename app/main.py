@@ -6,7 +6,7 @@ from app.api.api_v1.api import api_router
 from app.db.init_db import init_db
 from app.db.auto_migrate import ensure_database_compatibility
 from app.core.scheduler import app_scheduler
-# from app.middleware.compression import CompressionMiddleware
+from app.middleware.rate_limiting import RateLimitMiddleware
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,17 +17,15 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
-# Add compression middleware (temporarily disabled for compatibility)
-# app.add_middleware(CompressionMiddleware, minimum_size=1000)
+app.add_middleware(RateLimitMiddleware, calls=120, period=60)
 
-# Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type", "Accept", "X-Requested-With"],
     )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)

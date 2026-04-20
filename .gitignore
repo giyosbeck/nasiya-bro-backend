@@ -123,5 +123,31 @@ dmypy.json
 *.sqlite3
 nasiya_bro.db
 
-# Uploads
+# Uploads (user content — stays on server)
 uploads/
+
+# Database dumps and backups
+dump.sql
+*_dump_*.sql
+*_backup_*.sql
+nasiya_backup_*.sql
+migrate_prod_to_local.sql
+fix_push_tokens.sql
+
+# Secrets
+credentials
+*.credentials
+google-service-account.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Runtime
+backend.log
