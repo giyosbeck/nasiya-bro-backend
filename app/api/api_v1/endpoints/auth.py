@@ -42,14 +42,20 @@ async def register_manager(
         
         magazine_id = magazine.id
     
-    # Create new manager (status will be PENDING by default)
+    # Auto-grant trial per product brief §3: every new registration gets
+    # settings.TRIAL_DAYS of free access without admin approval.
+    from datetime import date, timedelta
+    from app.core.config import settings
+    trial_end = date.today() + timedelta(days=settings.TRIAL_DAYS)
+
     new_user = User(
         name=user_data.name,
         phone=user_data.phone,
         password_hash=get_password_hash(user_data.password),
         role=UserRole.MANAGER,
         magazine_id=magazine_id,
-        status=UserStatus.PENDING,
+        status=UserStatus.ACTIVE,
+        subscription_end_date=trial_end,
         user_type=user_data.user_type
     )
     
