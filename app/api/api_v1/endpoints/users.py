@@ -7,6 +7,8 @@ from app.models.user import User, UserRole, UserStatus
 from app.schemas.user import UserResponse, SellerCreate, UserApproval, UserStatusUpdate, SellerPermissionsUpdate
 from app.api.deps import get_current_admin_user, get_current_manager_user
 from app.core.security import get_password_hash
+from app.services.audit_service import log_action
+from app.models.audit import AuditLog
 
 router = APIRouter()
 
@@ -54,7 +56,19 @@ def approve_user(
     user.subscription_end_date = subscription_end_date
     db.commit()
     db.refresh(user)
-    
+
+    log_action(
+        db,
+        actor_id=current_user.id,
+        action="user.approve",
+        target_id=user.id,
+        metadata={
+            "subscription_months": approval_data.subscription_months,
+            "subscription_end_date": subscription_end_date.isoformat(),
+            "target_name": user.name,
+        },
+    )
+
     return {
         "message": f"User {user.name} has been approved",
         "subscription_end_date": subscription_end_date.isoformat(),
@@ -78,7 +92,15 @@ def reject_user(
     user.status = UserStatus.INACTIVE
     db.commit()
     db.refresh(user)
-    
+
+    log_action(
+        db,
+        actor_id=current_user.id,
+        action="user.reject",
+        target_id=user.id,
+        metadata={"target_name": user.name},
+    )
+
     return {"message": f"User {user.name} has been rejected"}
 
 @router.get("/stats")
@@ -237,7 +259,19 @@ def update_seller_status(
     seller.status = status_data.status
     db.commit()
     db.refresh(seller)
-    
+
+    log_action(
+        db,
+        actor_id=current_user.id,
+        action="seller.status",
+        target_id=seller.id,
+        metadata={
+            "old_status": old_status.value,
+            "new_status": status_data.status.value,
+            "target_name": seller.name,
+        },
+    )
+
     return {
         "message": f"Seller {seller.name} status updated from {old_status.value} to {status_data.status.value}",
         "seller_id": seller.id,
@@ -267,6 +301,18 @@ def update_seller_permissions(
     seller.can_see_purchase_price = bool(payload.can_see_purchase_price)
     db.commit()
     db.refresh(seller)
+
+    log_action(
+        db,
+        actor_id=current_user.id,
+        action="seller.permissions",
+        target_id=seller.id,
+        metadata={
+            "can_see_purchase_price": bool(payload.can_see_purchase_price),
+            "target_name": seller.name,
+        },
+    )
+
     return seller
 
 
@@ -390,11 +436,47 @@ def auto_check_expired_users(
     from app.services.subscription_service import check_and_deactivate_expired_users
     
     result = check_and_deactivate_expired_users()
-    
+
     if result["success"]:
         return result
     else:
         raise HTTPException(
             status_code=500,
             detail=result["message"]
-        ) 
+        )
+
+
+@router.get("/audit")
+def get_audit_log(
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user),
+):
+    """Admin audit log — newest first, capped at 200 per request."""
+    safe_limit = min(max(1, limit), 200)
+    entries = (
+        db.query(AuditLog)
+        .order_by(AuditLog.created_at.desc())
+        .limit(safe_limit)
+        .all()
+    )
+    import json as _json
+    result = []
+    for e in entries:
+        actor_name = e.actor.name if e.actor else None
+        target_name = e.target.name if e.target else None
+        try:
+            meta = _json.loads(e.metadata_json) if e.metadata_json else None
+        except Exception:
+            meta = None
+        result.append({
+            "id": e.id,
+            "actor_user_id": e.actor_user_id,
+            "actor_name": actor_name,
+            "action": e.action,
+            "target_user_id": e.target_user_id,
+            "target_name": target_name,
+            "metadata": meta,
+            "created_at": e.created_at.isoformat() if e.created_at else None,
+        })
+    return result 
