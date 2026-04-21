@@ -22,31 +22,34 @@ def main() -> int:
     print(f"Connected to {dialect}")
 
     if has_column(engine, "users", "can_see_purchase_price"):
-        print("Column already exists — skipping")
-        return 0
+        print("Column already exists — backfilling admin/manager")
+    else:
+        print("Adding can_see_purchase_price column...")
+        with engine.begin() as conn:
+            if dialect == "postgresql":
+                conn.execute(text(
+                    "ALTER TABLE users ADD COLUMN can_see_purchase_price BOOLEAN "
+                    "NOT NULL DEFAULT FALSE"
+                ))
+            else:
+                conn.execute(text(
+                    "ALTER TABLE users ADD COLUMN can_see_purchase_price BOOLEAN "
+                    "NOT NULL DEFAULT 0"
+                ))
 
-    print("Adding can_see_purchase_price column...")
     with engine.begin() as conn:
         if dialect == "postgresql":
             conn.execute(text(
-                "ALTER TABLE users ADD COLUMN can_see_purchase_price BOOLEAN "
-                "NOT NULL DEFAULT FALSE"
-            ))
-            conn.execute(text(
                 "UPDATE users SET can_see_purchase_price = TRUE "
-                "WHERE role IN ('admin', 'manager')"
+                "WHERE role::text IN ('ADMIN', 'MANAGER', 'admin', 'manager')"
             ))
         else:
             conn.execute(text(
-                "ALTER TABLE users ADD COLUMN can_see_purchase_price BOOLEAN "
-                "NOT NULL DEFAULT 0"
-            ))
-            conn.execute(text(
                 "UPDATE users SET can_see_purchase_price = 1 "
-                "WHERE role IN ('admin', 'manager')"
+                "WHERE role IN ('ADMIN', 'MANAGER', 'admin', 'manager')"
             ))
 
-    print("✅ Column added and admin/manager backfilled")
+    print("✅ Column added + admin/manager backfilled")
     return 0
 
 
