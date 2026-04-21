@@ -426,6 +426,34 @@ def create_loan(
         overdue_amount=0.0
     )
 
+@router.get("/my-upcoming-payments", response_model=List[dict])
+def get_my_upcoming_payments(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    from datetime import datetime, timedelta
+    end_date = datetime.now() + timedelta(days=30)
+    query = db.query(LoanPayment).join(Loan).filter(
+        LoanPayment.status == PaymentStatus.PENDING,
+        LoanPayment.due_date >= datetime.now(),
+        LoanPayment.due_date <= end_date,
+        Loan.is_completed == False,
+        Loan.seller_id == current_user.id
+    )
+    upcoming_payments = query.order_by(LoanPayment.due_date).all()
+    return [
+        {
+            "id": str(p.id),
+            "clientName": p.loan.client.name,
+            "amount": p.amount,
+            "dueDate": p.due_date.isoformat(),
+            "loanId": str(p.loan_id),
+            "productName": p.loan.product.name,
+        }
+        for p in upcoming_payments
+    ]
+
+
 @router.get("/{loan_id}", response_model=LoanResponse)
 def get_loan(
     loan_id: int,
@@ -921,42 +949,6 @@ def pay_full_loan(
         "payments_settled": payments_count,
         "loan_completed": True
     }
-
-@router.get("/my-upcoming-payments", response_model=List[dict])
-def get_my_upcoming_payments(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    """Get all upcoming payments for current user's clients (for notification scheduling)"""
-    from datetime import datetime, timedelta
-
-    # Get payments due in next 30 days for notification scheduling
-    end_date = datetime.now() + timedelta(days=30)
-
-    # Build query for current user's loans
-    query = db.query(LoanPayment).join(Loan).filter(
-        LoanPayment.status == PaymentStatus.PENDING,
-        LoanPayment.due_date >= datetime.now(),
-        LoanPayment.due_date <= end_date,
-        Loan.is_completed == False,
-        Loan.seller_id == current_user.id  # Only current user's loans
-    )
-
-    upcoming_payments = query.order_by(LoanPayment.due_date).all()
-
-    # Format for mobile notification system
-    result = []
-    for payment in upcoming_payments:
-        result.append({
-            "id": str(payment.id),
-            "clientName": payment.loan.client.name,
-            "amount": payment.amount,
-            "dueDate": payment.due_date.isoformat(),
-            "loanId": str(payment.loan_id),
-            "productName": payment.loan.product.name
-        })
-
-    return result
 
 @router.post("/check-payment-status")
 def check_and_update_payment_status(
