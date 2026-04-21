@@ -209,6 +209,22 @@ def logout():
     """Logout endpoint (token should be removed on client side)"""
     return {"message": "Successfully logged out"}
 
+
+@router.post("/refresh", response_model=Token)
+def refresh_token(
+    current_user: User = Depends(get_current_user),
+):
+    """Issue a fresh access token for the currently authenticated user."""
+    if current_user.magazine:
+        current_user.magazine_name = current_user.magazine.name
+    access_token = create_access_token(subject=current_user.id)
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": current_user,
+    }
+
+
 @router.post("/check-approval-status")
 def check_approval_status(
     request_data: dict,
