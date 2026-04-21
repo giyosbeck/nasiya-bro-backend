@@ -27,6 +27,10 @@ class LoanCreate(BaseModel):
     video_url: Optional[str] = None
     agreement_images: Optional[List[str]] = None
     imei: Optional[str] = None
+    track_payments: Optional[bool] = False
+
+class LoanTrackingUpdate(BaseModel):
+    track_payments: bool
 
 class LoanResponse(BaseModel):
     id: int
@@ -39,6 +43,7 @@ class LoanResponse(BaseModel):
     loan_start_date: datetime
     created_at: datetime
     is_completed: bool
+    track_payments: bool
     product_id: int
     client_id: int
     seller_id: int
@@ -51,7 +56,7 @@ class LoanResponse(BaseModel):
     agreement_images: Optional[List[str]]
     imei: Optional[str]
     overdue_amount: float
-    
+
     class Config:
         from_attributes = True
 
@@ -249,6 +254,7 @@ def get_loans(
             loan_start_date=to_uzbekistan_time(loan.loan_start_date),
             created_at=to_uzbekistan_time(loan.created_at),
             is_completed=loan.is_completed,
+            track_payments=bool(loan.track_payments),
             product_id=loan.product_id,
             client_id=loan.client_id,
             seller_id=loan.seller_id,
@@ -368,7 +374,8 @@ def create_loan(
             loan_start_date=loan_data.loan_start_date,
             video_url=loan_data.video_url,
             agreement_images=json.dumps(loan_data.agreement_images) if loan_data.agreement_images else None,
-            imei=loan_data.imei
+            imei=loan_data.imei,
+            track_payments=bool(loan_data.track_payments),
         )
         
         # Update product inventory atomically
@@ -412,6 +419,7 @@ def create_loan(
         loan_start_date=to_uzbekistan_time(new_loan.loan_start_date),
         created_at=to_uzbekistan_time(new_loan.created_at),
         is_completed=new_loan.is_completed,
+        track_payments=bool(new_loan.track_payments),
         product_id=new_loan.product_id,
         client_id=new_loan.client_id,
         seller_id=new_loan.seller_id,
@@ -499,6 +507,7 @@ def get_loan(
         loan_start_date=to_uzbekistan_time(loan.loan_start_date),
         created_at=to_uzbekistan_time(loan.created_at),
         is_completed=loan.is_completed,
+        track_payments=bool(loan.track_payments),
         product_id=loan.product_id,
         client_id=loan.client_id,
         seller_id=loan.seller_id,
@@ -512,6 +521,60 @@ def get_loan(
         imei=loan.imei,
         overdue_amount=overdue_amount
     )
+
+
+@router.put("/{loan_id}/tracking", response_model=LoanResponse)
+def update_loan_tracking(
+    loan_id: int,
+    payload: LoanTrackingUpdate,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Toggle payment tracking for a loan."""
+    loan = db.query(Loan).filter(Loan.id == loan_id).first()
+    if not loan:
+        raise HTTPException(status_code=404, detail="Loan not found")
+    if current_user.role != UserRole.ADMIN:
+        if loan.magazine_id != current_user.magazine_id:
+            raise HTTPException(status_code=403, detail="Access denied")
+
+    loan.track_payments = bool(payload.track_payments)
+    db.commit()
+    db.refresh(loan)
+
+    agreement_images = json.loads(loan.agreement_images) if loan.agreement_images else None
+    base_url = f"{request.url.scheme}://{request.url.netloc}/api/v1/files/serve"
+    video_url = f"{base_url}/{loan.video_url}" if loan.video_url else None
+    full_agreement_images = [f"{base_url}/{img}" for img in agreement_images] if agreement_images else None
+    overdue_amount = calculate_overdue_amount(db, loan)
+
+    return LoanResponse(
+        id=loan.id,
+        loan_price=loan.loan_price,
+        initial_payment=loan.initial_payment,
+        remaining_amount=loan.remaining_amount,
+        loan_months=loan.loan_months,
+        interest_rate=loan.interest_rate,
+        monthly_payment=loan.monthly_payment,
+        loan_start_date=to_uzbekistan_time(loan.loan_start_date),
+        created_at=to_uzbekistan_time(loan.created_at),
+        is_completed=loan.is_completed,
+        track_payments=bool(loan.track_payments),
+        product_id=loan.product_id,
+        client_id=loan.client_id,
+        seller_id=loan.seller_id,
+        product_name=loan.product.name,
+        product_model=loan.product.model,
+        client_name=loan.client.name,
+        client_phone=loan.client.phone,
+        seller_name=loan.seller.name,
+        video_url=video_url,
+        agreement_images=full_agreement_images,
+        imei=loan.imei,
+        overdue_amount=overdue_amount,
+    )
+
 
 # Payment Management Endpoints
 

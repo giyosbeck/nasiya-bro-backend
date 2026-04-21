@@ -46,6 +46,7 @@ class Loan(Base):
     agreement_images = Column(Text, nullable=True)  # JSON string of image URLs
     imei = Column(String(20), nullable=True)
     is_completed = Column(Boolean, default=False)
+    track_payments = Column(Boolean, default=False, nullable=False, server_default="false")
     created_at = Column(DateTime(timezone=True), default=uzbekistan_now)
     
     # Foreign keys
