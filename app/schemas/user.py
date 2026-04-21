@@ -31,7 +31,8 @@ class UserResponse(UserBase):
     magazine_id: Optional[int] = None
     magazine_name: Optional[str] = None  # Will be populated from magazine relationship
     created_at: Optional[datetime] = None
-    
+    can_see_purchase_price: bool = False
+
     class Config:
         from_attributes = True
 
@@ -39,6 +40,7 @@ class SellerCreate(BaseModel):
     name: str
     phone: str
     password: str
+    can_see_purchase_price: bool = False
     
     @validator('phone')
     def validate_phone(cls, v):
@@ -54,6 +56,9 @@ class UserApproval(BaseModel):
         if v < 1 or v > 120:
             raise ValueError('Subscription months must be between 1 and 120')
         return v
+
+class SellerPermissionsUpdate(BaseModel):
+    can_see_purchase_price: bool
 
 class UserStatusUpdate(BaseModel):
     status: UserStatus

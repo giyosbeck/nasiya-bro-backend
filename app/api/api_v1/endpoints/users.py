@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.user import User, UserRole, UserStatus
-from app.schemas.user import UserResponse, SellerCreate, UserApproval, UserStatusUpdate
+from app.schemas.user import UserResponse, SellerCreate, UserApproval, UserStatusUpdate, SellerPermissionsUpdate
 from app.api.deps import get_current_admin_user, get_current_manager_user
 from app.core.security import get_password_hash
 
@@ -170,7 +170,8 @@ def create_seller(
         role=UserRole.SELLER,
         status=UserStatus.ACTIVE,  # Sellers are immediately active
         manager_id=current_user.id,  # Link to the manager who created this seller
-        magazine_id=current_user.magazine_id  # Inherit magazine ID from manager
+        magazine_id=current_user.magazine_id,  # Inherit magazine ID from manager
+        can_see_purchase_price=bool(seller_data.can_see_purchase_price),
     )
     
     db.add(new_seller)
@@ -244,6 +245,30 @@ def update_seller_status(
         "old_status": old_status.value,
         "new_status": status_data.status.value
     }
+
+
+@router.put("/sellers/{seller_id}/permissions", response_model=UserResponse)
+def update_seller_permissions(
+    seller_id: int,
+    payload: SellerPermissionsUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_manager_user),
+):
+    """Update per-seller permissions (manager + admin only)."""
+    seller = db.query(User).filter(
+        User.id == seller_id,
+        User.role == UserRole.SELLER,
+    ).first()
+    if not seller:
+        raise HTTPException(status_code=404, detail="Seller not found")
+    if current_user.role != UserRole.ADMIN and seller.manager_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not your seller")
+
+    seller.can_see_purchase_price = bool(payload.can_see_purchase_price)
+    db.commit()
+    db.refresh(seller)
+    return seller
+
 
 @router.post("/check-expired")
 def check_and_deactivate_expired_users(

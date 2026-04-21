@@ -38,6 +38,9 @@ class User(Base):
     
     # For sellers - reference to manager
     manager_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+
+    # Granular permissions (currently only for sellers)
+    can_see_purchase_price = Column(Boolean, default=False, nullable=False, server_default="false")
     
     # Relationships
     magazine = relationship("Magazine", back_populates="users", foreign_keys=[magazine_id])
