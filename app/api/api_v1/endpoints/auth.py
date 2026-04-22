@@ -272,6 +272,17 @@ def check_approval_status(
     
     return response_data
 
+@router.delete("/demo-seed")
+def remove_demo_seed(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Remove the demo seed items created at registration."""
+    from app.services.demo_seed_service import cleanup_for_user
+    removed = cleanup_for_user(db, current_user)
+    return {"removed": removed}
+
+
 @router.delete("/delete-account")
 def delete_account(
     current_user: User = Depends(get_current_user),

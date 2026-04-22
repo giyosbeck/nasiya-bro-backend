@@ -19,6 +19,41 @@ DEMO_CLIENT_NAME = "Demo Mijoz"
 DEMO_CLIENT_PHONE = "+998900000000"
 
 
+def cleanup_for_user(db: Session, user: User) -> int:
+    """Delete demo seed items for a user if they still match signature.
+
+    Returns count of removed rows. User-modified items won't match and are
+    preserved.
+    """
+    removed = 0
+    try:
+        products_spec = (
+            GADGETS_PRODUCTS if user.user_type == UserType.GADGETS else AUTO_PRODUCTS
+        )
+        for name, model, purchase, sale, count in products_spec:
+            q = db.query(Product).filter(
+                Product.manager_id == user.id,
+                Product.name == name,
+                Product.model == model,
+                Product.purchase_price == purchase,
+                Product.sale_price == sale,
+                Product.count == count,
+            )
+            removed += q.delete(synchronize_session=False)
+
+        q = db.query(Client).filter(
+            Client.manager_id == user.id,
+            Client.name == DEMO_CLIENT_NAME,
+            Client.phone == DEMO_CLIENT_PHONE + str(user.id),
+        )
+        removed += q.delete(synchronize_session=False)
+
+        db.commit()
+    except Exception:
+        db.rollback()
+    return removed
+
+
 def _rand_passport() -> str:
     letters = "".join(random.choices(string.ascii_uppercase, k=2))
     digits = "".join(random.choices(string.digits, k=7))
