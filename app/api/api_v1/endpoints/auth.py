@@ -62,11 +62,15 @@ async def register_manager(
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    
+
     # Load magazine relationship for response
     if new_user.magazine:
         new_user.magazine_name = new_user.magazine.name
-    
+
+    # Seed demo data (1 client + 2 sample products) so first-run is not empty.
+    from app.services.demo_seed_service import seed_for_user
+    seed_for_user(db, new_user)
+
     # Generate access token for pending user (so they can stay logged in)
     access_token = create_access_token(subject=new_user.id)
     
