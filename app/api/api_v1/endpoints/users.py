@@ -212,7 +212,7 @@ def grant_trial(
 
     log_action(
         db,
-        actor=current_user,
+        actor_id=current_user.id,
         action="user.grant_trial",
         target_id=user.id,
         metadata={
