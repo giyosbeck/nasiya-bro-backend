@@ -212,6 +212,41 @@ def create_sale(
         imei=new_sale.imei
     )
 
+@router.delete("/{sale_id}")
+def delete_sale(
+    sale_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Delete a sale and restore product stock. Manager or admin only."""
+    from app.models.transaction import Transaction
+
+    sale = db.query(Sale).filter(Sale.id == sale_id).first()
+    if not sale:
+        raise HTTPException(status_code=404, detail="Sale not found")
+
+    if current_user.role == UserRole.SELLER:
+        raise HTTPException(status_code=403, detail="Only managers or admins can delete sales")
+
+    if current_user.role != UserRole.ADMIN and sale.magazine_id != current_user.magazine_id:
+        raise HTTPException(status_code=403, detail="You can only delete sales from your magazine")
+
+    product = db.query(Product).filter(Product.id == sale.product_id).first()
+
+    try:
+        if product:
+            product.count += 1
+
+        db.query(Transaction).filter(Transaction.sale_id == sale.id).delete(synchronize_session=False)
+        db.delete(sale)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to delete sale: {str(e)}")
+
+    return {"message": "Sale deleted", "stock_restored": 1}
+
+
 @router.get("/{sale_id}", response_model=SaleResponse)
 def get_sale(
     sale_id: int,
