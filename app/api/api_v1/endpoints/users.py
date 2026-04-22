@@ -108,19 +108,123 @@ def get_user_stats(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_admin_user)
 ):
-    """Get user statistics (admin only)"""
-    total_managers = db.query(User).filter(User.role == UserRole.MANAGER).count()
-    pending_approvals = db.query(User).filter(
-        User.role == UserRole.MANAGER,
-        User.status == UserStatus.PENDING
+    """Get comprehensive user statistics (admin only)."""
+    from datetime import date, timedelta
+    today = date.today()
+    week_start = today - timedelta(days=7)
+    soon = today + timedelta(days=7)
+
+    base = db.query(User).filter(User.role != UserRole.ADMIN)
+
+    total = base.count()
+    active = base.filter(User.status == UserStatus.ACTIVE).count()
+    deactivated = base.filter(User.status == UserStatus.INACTIVE).count()
+    pending = base.filter(User.status == UserStatus.PENDING).count()
+
+    expiring_7d = base.filter(
+        User.status == UserStatus.ACTIVE,
+        User.subscription_end_date.isnot(None),
+        User.subscription_end_date >= today,
+        User.subscription_end_date <= soon,
     ).count()
-    active_users = db.query(User).filter(User.status == UserStatus.ACTIVE).count()
-    
+
+    expired_active = base.filter(
+        User.status == UserStatus.ACTIVE,
+        User.subscription_end_date.isnot(None),
+        User.subscription_end_date < today,
+    ).count()
+
+    new_today = base.filter(User.created_at >= today).count()
+    new_week = base.filter(User.created_at >= week_start).count()
+
     return {
-        "total_managers": total_managers,
-        "pending_approvals": pending_approvals,
-        "active_users": active_users,
-        "total_revenue": 0  # TODO: Calculate from sales/loans
+        "total": total,
+        "active": active,
+        "pending": pending,
+        "deactivated": deactivated,
+        "expiring_7d": expiring_7d,
+        "expired": expired_active,
+        "new_today": new_today,
+        "new_week": new_week,
+    }
+
+
+@router.get("/{user_id}/activity")
+def get_user_activity(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Get per-user activity summary (admin only)."""
+    from app.models.product import Product
+    from app.models.transaction import Sale, Loan
+    from app.models.user import Client
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if user.user_type and user.user_type.value == "GADGETS" and user.magazine_id:
+        clients = db.query(Client).join(User, Client.manager_id == User.id).filter(
+            User.magazine_id == user.magazine_id
+        ).count()
+        products = db.query(Product).join(User, Product.manager_id == User.id).filter(
+            User.magazine_id == user.magazine_id
+        ).count() if hasattr(Product, "manager_id") else db.query(Product).count()
+        sales = db.query(Sale).filter(Sale.seller_id == user.id).count()
+        loans = db.query(Loan).filter(Loan.seller_id == user.id).count() if hasattr(Loan, "seller_id") else 0
+    else:
+        clients = db.query(Client).filter(Client.manager_id == user.id).count()
+        products = db.query(Product).filter(Product.manager_id == user.id).count() if hasattr(Product, "manager_id") else 0
+        sales = db.query(Sale).filter(Sale.seller_id == user.id).count()
+        loans = db.query(Loan).filter(Loan.seller_id == user.id).count() if hasattr(Loan, "seller_id") else 0
+
+    return {
+        "clients_count": clients,
+        "products_count": products,
+        "sales_count": sales,
+        "loans_count": loans,
+    }
+
+
+@router.put("/{user_id}/grant-trial")
+def grant_trial(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Reset user subscription to a fresh trial period (admin only)."""
+    from datetime import date, timedelta
+    from app.core.config import settings
+    from app.services.audit_service import log_action
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if user.role == UserRole.ADMIN:
+        raise HTTPException(status_code=400, detail="Cannot modify admin user")
+
+    user.subscription_end_date = date.today() + timedelta(days=settings.TRIAL_DAYS)
+    user.status = UserStatus.ACTIVE
+    db.commit()
+    db.refresh(user)
+
+    log_action(
+        db,
+        actor=current_user,
+        action="user.grant_trial",
+        target_id=user.id,
+        metadata={
+            "target_name": user.name,
+            "trial_days": settings.TRIAL_DAYS,
+            "subscription_end_date": user.subscription_end_date.isoformat(),
+        },
+    )
+
+    return {
+        "message": f"Trial granted to {user.name}",
+        "subscription_end_date": user.subscription_end_date.isoformat(),
     }
 
 @router.put("/{user_id}/activate")
