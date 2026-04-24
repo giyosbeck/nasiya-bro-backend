@@ -88,11 +88,11 @@ async def register_manager(
             
             for token in push_tokens:
                 # Create notification record
-                user_type_display = "Auto" if new_user.user_type == UserType.AUTO else ("Gadgets" if new_user.user_type == UserType.GADGETS else "Pending Mode Selection")
+                user_type_display = "AUTO" if new_user.user_type == UserType.AUTO else ("GADGETS" if new_user.user_type == UserType.GADGETS else "—")
                 notification = Notification(
                     type=NotificationType.new_user_registration,
-                    title="New User Registration",
-                    body=f"{new_user.name} ({user_type_display}) has registered and needs approval",
+                    title="Yangi foydalanuvchi",
+                    body=f"{new_user.name} ({user_type_display}) ro'yxatdan o'tdi — 90 kunlik trial boshlandi",
                     data={
                         "userId": str(new_user.id),
                         "userName": new_user.name,

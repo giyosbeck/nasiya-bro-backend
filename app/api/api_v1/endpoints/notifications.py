@@ -35,19 +35,24 @@ async def register_push_token(
         ).first()
         
         if existing_token:
-            # Update existing token (refresh timestamp and ensure it's active)
             existing_token.is_active = True
             existing_token.device_type = token_data.device_type
             existing_token.updated_at = datetime.now()
         else:
-            # Create new token - this supports multiple users per device
             new_token = PushToken(
                 token=token_data.push_token,
                 user_id=current_user.id,
                 device_type=token_data.device_type
             )
             db.add(new_token)
-        
+
+        # Deactivate user's other active tokens so only latest device gets push.
+        db.query(PushToken).filter(
+            PushToken.user_id == current_user.id,
+            PushToken.token != token_data.push_token,
+            PushToken.is_active == True,
+        ).update({"is_active": False}, synchronize_session=False)
+
         db.commit()
         
         return {
