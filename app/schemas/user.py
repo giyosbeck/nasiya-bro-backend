@@ -11,11 +11,20 @@ class UserCreate(UserBase):
     password: str
     magazine_name: Optional[str] = None
     user_type: Optional[UserType] = None
-    
+    language: Optional[str] = None
+
     @validator('phone')
     def validate_phone(cls, v):
         if not v.startswith('+998'):
             raise ValueError('Phone number must start with +998')
+        return v
+
+    @validator('language')
+    def validate_language(cls, v):
+        if v is None:
+            return v
+        if v not in ("uz", "ru", "en"):
+            raise ValueError('language must be uz, ru, or en')
         return v
 
 class UserLogin(BaseModel):
@@ -32,6 +41,7 @@ class UserResponse(UserBase):
     magazine_name: Optional[str] = None  # Will be populated from magazine relationship
     created_at: Optional[datetime] = None
     can_see_purchase_price: bool = False
+    language: Optional[str] = None
 
     class Config:
         from_attributes = True

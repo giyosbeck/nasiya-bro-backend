@@ -56,7 +56,8 @@ async def register_manager(
         magazine_id=magazine_id,
         status=UserStatus.ACTIVE,
         subscription_end_date=trial_end,
-        user_type=user_data.user_type
+        user_type=user_data.user_type,
+        language=user_data.language or "uz",
     )
     
     db.add(new_user)
@@ -89,10 +90,11 @@ async def register_manager(
             for token in push_tokens:
                 # Create notification record
                 user_type_display = "AUTO" if new_user.user_type == UserType.AUTO else ("GADGETS" if new_user.user_type == UserType.GADGETS else "—")
+                from app.i18n.notifications import t as _t
                 notification = Notification(
                     type=NotificationType.new_user_registration,
-                    title="Yangi foydalanuvchi",
-                    body=f"{new_user.name} ({user_type_display}) ro'yxatdan o'tdi — 90 kunlik trial boshlandi",
+                    title=_t("new_user.title", lang=admin.language),
+                    body=_t("new_user.body", lang=admin.language, name=new_user.name, type=user_type_display),
                     data={
                         "userId": str(new_user.id),
                         "userName": new_user.name,
@@ -366,10 +368,11 @@ def update_profile(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Update user profile (name and password)"""
+    """Update user profile (name, password, language)"""
     name = request_data.get("name")
     current_password = request_data.get("current_password")
     new_password = request_data.get("new_password")
+    language = request_data.get("language")
 
     if not name or not name.strip():
         raise HTTPException(
@@ -380,6 +383,15 @@ def update_profile(
     try:
         # Update name
         current_user.name = name.strip()
+
+        # Update language (optional)
+        if language is not None:
+            if language not in ("uz", "ru", "en"):
+                raise HTTPException(
+                    status_code=400,
+                    detail="language must be uz, ru, or en",
+                )
+            current_user.language = language
 
         # Update password if provided
         if new_password:

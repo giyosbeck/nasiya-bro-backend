@@ -41,7 +41,10 @@ class User(Base):
 
     # Granular permissions (currently only for sellers)
     can_see_purchase_price = Column(Boolean, default=False, nullable=False, server_default="false")
-    
+
+    # Preferred language for notifications (uz/ru/en). NULL = fallback to uz.
+    language = Column(String(2), nullable=True)
+
     # Relationships
     magazine = relationship("Magazine", back_populates="users", foreign_keys=[magazine_id])
     manager = relationship("User", remote_side=[id], back_populates="sellers", foreign_keys=[manager_id])
