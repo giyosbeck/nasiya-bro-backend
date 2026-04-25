@@ -133,6 +133,27 @@ async def save_file(file: UploadFile, subdirectory: str) -> FileUploadResponse:
         uploaded_at=datetime.now()
     )
 
+@router.post("/upload-avatar", response_model=FileUploadResponse)
+async def upload_avatar_image(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user)
+):
+    """Upload profile avatar image for current user."""
+    if not validate_file_type(file, ALLOWED_IMAGE_TYPES):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid file type. Allowed types: {', '.join(ALLOWED_IMAGE_TYPES)}"
+        )
+    try:
+        return await save_file(file, "avatars")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to upload avatar: {str(e)}"
+        )
+
 @router.post("/upload-passport", response_model=FileUploadResponse)
 async def upload_passport_image(
     file: UploadFile = File(...),

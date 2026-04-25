@@ -45,6 +45,9 @@ class User(Base):
     # Preferred language for notifications (uz/ru/en). NULL = fallback to uz.
     language = Column(String(2), nullable=True)
 
+    # Profile avatar — relative path under UPLOAD_FOLDER/avatars/{uuid}.jpg
+    avatar_url = Column(String, nullable=True)
+
     # Relationships
     magazine = relationship("Magazine", back_populates="users", foreign_keys=[magazine_id])
     manager = relationship("User", remote_side=[id], back_populates="sellers", foreign_keys=[manager_id])

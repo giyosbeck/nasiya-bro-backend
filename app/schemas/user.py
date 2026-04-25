@@ -42,6 +42,7 @@ class UserResponse(UserBase):
     created_at: Optional[datetime] = None
     can_see_purchase_price: bool = False
     language: Optional[str] = None
+    avatar_url: Optional[str] = None
 
     class Config:
         from_attributes = True

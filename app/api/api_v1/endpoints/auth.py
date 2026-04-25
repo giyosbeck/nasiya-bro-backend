@@ -368,23 +368,24 @@ def update_profile(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Update user profile (name, password, language)"""
+    """Update user profile (name, password, language, avatar_url — all optional)."""
     name = request_data.get("name")
     current_password = request_data.get("current_password")
     new_password = request_data.get("new_password")
     language = request_data.get("language")
+    avatar_url_provided = "avatar_url" in request_data
+    avatar_url = request_data.get("avatar_url")
 
-    if not name or not name.strip():
-        raise HTTPException(
-            status_code=400,
-            detail="Name is required"
-        )
+    if name is not None and not name.strip():
+        raise HTTPException(status_code=400, detail="Name cannot be empty")
+
+    if name is None and language is None and not new_password and not avatar_url_provided:
+        raise HTTPException(status_code=400, detail="Nothing to update")
 
     try:
-        # Update name
-        current_user.name = name.strip()
+        if name is not None:
+            current_user.name = name.strip()
 
-        # Update language (optional)
         if language is not None:
             if language not in ("uz", "ru", "en"):
                 raise HTTPException(
@@ -392,6 +393,21 @@ def update_profile(
                     detail="language must be uz, ru, or en",
                 )
             current_user.language = language
+
+        if avatar_url_provided:
+            old_avatar = current_user.avatar_url
+            new_avatar = avatar_url if avatar_url else None
+            current_user.avatar_url = new_avatar
+            if old_avatar and old_avatar != new_avatar:
+                from pathlib import Path
+                from app.core.config import settings
+                try:
+                    old_path = Path(settings.UPLOAD_FOLDER) / old_avatar
+                    old_path.resolve().relative_to(Path(settings.UPLOAD_FOLDER).resolve())
+                    if old_path.exists():
+                        old_path.unlink()
+                except (ValueError, OSError):
+                    pass
 
         # Update password if provided
         if new_password:
@@ -432,7 +448,9 @@ def update_profile(
                 "role": current_user.role,
                 "status": current_user.status,
                 "user_type": current_user.user_type,
-                "magazine_id": current_user.magazine_id
+                "magazine_id": current_user.magazine_id,
+                "language": current_user.language,
+                "avatar_url": current_user.avatar_url,
             }
         }
     except HTTPException:
