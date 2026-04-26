@@ -62,6 +62,14 @@ async def shutdown_event():
 async def root():
     return {"message": "Nasiya Bro API", "version": settings.VERSION}
 
+@app.get("/privacy", include_in_schema=False)
+async def privacy_policy():
+    """Public privacy policy required by App Store and Google Play listings."""
+    from fastapi.responses import FileResponse
+    from pathlib import Path
+    path = Path(__file__).resolve().parent.parent / "static" / "privacy.html"
+    return FileResponse(str(path), media_type="text/html")
+
 @app.get("/scheduler/status")
 async def get_scheduler_status():
     """Get information about scheduled jobs"""
