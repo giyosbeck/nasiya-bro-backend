@@ -105,6 +105,51 @@ def get_user_activity(
     }
 
 
+@router.get("/{user_id}/clients")
+def get_user_clients(
+    user_id: int,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user),
+):
+    """Get list of clients created by this user with loan summary (admin only)."""
+    from app.models.user import Client
+    from app.models.transaction import Loan
+    from app.models.auto_transaction import AutoLoan
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    clients_q = db.query(Client).filter(Client.manager_id == user.id)
+    if user.user_type and user.user_type.value == "GADGETS" and user.magazine_id:
+        clients_q = db.query(Client).join(User, Client.manager_id == User.id).filter(
+            User.magazine_id == user.magazine_id
+        )
+
+    clients = clients_q.order_by(Client.created_at.desc()).limit(limit).all()
+
+    is_auto = user.user_type and user.user_type.value == "AUTO"
+    LoanModel = AutoLoan if is_auto else Loan
+
+    response = []
+    for c in clients:
+        loans = db.query(LoanModel).filter(LoanModel.client_id == c.id).all()
+        total_value = sum((l.loan_price or 0) for l in loans)
+        active_count = sum(1 for l in loans if not getattr(l, "is_completed", False))
+        response.append({
+            "id": c.id,
+            "name": c.name,
+            "phone": c.phone,
+            "created_at": c.created_at.isoformat() if c.created_at else None,
+            "loan_count": len(loans),
+            "active_loan_count": active_count,
+            "total_loan_value": float(total_value),
+        })
+
+    return response
+
+
 @router.put("/{user_id}/grant-trial")
 def grant_trial(
     user_id: int,
